@@ -11,7 +11,7 @@ import type {
   ServiceAdapter,
   ServiceAdapterConfig,
 } from '../types';
-import { convertToServiceError, handleGeneralError } from '../utils';
+import { convertToServiceError, handleGeneralError } from '../utils/error';
 import { SseStreamHandler } from '../utils/sse';
 
 export abstract class BaseAdapter implements ServiceAdapter {

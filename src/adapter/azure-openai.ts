@@ -3,7 +3,7 @@ import type {
   ServiceError,
   ValidationCompletion,
 } from '@bob-translate/types';
-import { handleValidateError } from '../utils';
+import { handleValidateError } from '../utils/error';
 import { OpenAiAdapter } from './openai';
 
 export class AzureOpenAiAdapter extends OpenAiAdapter {

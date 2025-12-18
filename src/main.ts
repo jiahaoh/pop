@@ -6,12 +6,8 @@ import type {
 import { getServiceAdapter } from './adapter';
 import { supportLanguageList } from './lang';
 import type { ServiceProvider } from './types';
-import {
-  ensureHttpsAndNoTrailingSlash,
-  getApiKey,
-  handleGeneralError,
-  handleValidateError,
-} from './utils';
+import { ensureHttpsAndNoTrailingSlash, getApiKey } from './utils/common';
+import { handleGeneralError, handleValidateError } from './utils/error';
 
 const validatePluginConfig = (): ServiceError | null => {
   const { apiKeys, apiUrl, customModel, model, serviceProvider } = $option;

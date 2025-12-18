@@ -5,7 +5,9 @@ import type {
   ValidationCompletion,
 } from '@bob-translate/types';
 import type { GeminiResponse, OpenAiResponse } from '../types';
-import { generatePrompts, handleValidateError } from '../utils';
+import { handleValidateError } from '../utils/error';
+import { getGeminiMinimalThinkingConfig } from '../utils/model-capabilities';
+import { generatePrompts } from '../utils/prompt';
 import { BaseAdapter } from './base';
 
 export class GeminiAdapter extends BaseAdapter {
@@ -80,12 +82,9 @@ export class GeminiAdapter extends BaseAdapter {
     };
 
     if (!this.isThinkingModeEnabled()) {
-      const model = this.getModel();
-      // Gemini 3 series uses thinkingLevel, Gemini 2.5 series uses thinkingBudget
-      if (model.includes('gemini-3')) {
-        generationConfig.thinkingConfig = { thinkingLevel: 'minimal' };
-      } else {
-        generationConfig.thinkingConfig = { thinkingBudget: 0 };
+      const thinkingConfig = getGeminiMinimalThinkingConfig(this.getModel());
+      if (thinkingConfig) {
+        generationConfig.thinkingConfig = thinkingConfig;
       }
     }
 

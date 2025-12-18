@@ -11,11 +11,12 @@ import type {
   OpenAiResponse,
   ServiceAdapterConfig,
 } from '../types';
+import { handleValidateError } from '../utils/error';
 import {
-  generatePrompts,
-  handleValidateError,
-  replacePromptKeywords,
-} from '../utils';
+  getMinimalReasoningEffort,
+  supportsTemperature,
+} from '../utils/model-capabilities';
+import { generatePrompts, replacePromptKeywords } from '../utils/prompt';
 import { BaseAdapter } from './base';
 
 export class OpenAiAdapter extends BaseAdapter {
@@ -192,15 +193,16 @@ export class OpenAiAdapter extends BaseAdapter {
       input: userPrompt,
     };
 
-    // GPT-5 series models don't support temperature
-    if (!model.includes('gpt-5-')) {
-      body.temperature = this.getTemperature();
+    const reasoningEffort = this.isThinkingModeEnabled()
+      ? undefined
+      : getMinimalReasoningEffort(model);
+
+    if (reasoningEffort) {
+      body.reasoning = { effort: reasoningEffort };
     }
 
-    if (!this.isThinkingModeEnabled()) {
-      // GPT-5 series supports 'minimal', GPT-5.1/5.2 series supports 'none'
-      const effort = model.includes('gpt-5-') ? 'minimal' : 'none';
-      body.reasoning = { effort };
+    if (supportsTemperature(model, reasoningEffort)) {
+      body.temperature = this.getTemperature();
     }
 
     return body;
