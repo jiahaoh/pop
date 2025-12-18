@@ -2,6 +2,13 @@
   "identifier": "yetone.openai.translator",
   "versions": [
     {
+      "version": "4.2.1",
+      "desc": "Fix API error \"Unsupported parameter: 'reasoning.effort' is not supported with this model\" when using non-reasoning models",
+      "sha256": "051ecd12622f9658fe917f4b2acb9c8260a3e24e07c7be5c63fb865d2af67769",
+      "url": "https://github.com/openai-translator/bob-plugin-openai-translator/releases/download/v4.2.1/openai-translator-4.2.1.bobplugin",
+      "minBobVersion": "1.8.0"
+    },
+    {
       "version": "4.2.0",
       "desc": "Add Chat Completions API support ",
       "sha256": "8187eb3b0376bc9cb7fb04262670902f835a4daa91ce41940ac36550b36a02ce",
