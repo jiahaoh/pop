@@ -2,6 +2,13 @@
   "identifier": "yetone.openai.translator",
   "versions": [
     {
+      "version": "4.1.0",
+      "desc": "Add thinking mode toggle for reasoning models",
+      "sha256": "29eac1fb2027302b80567ad757f4188f40f3e0444fb1c1c049a73264bbad1e0d",
+      "url": "https://github.com/openai-translator/bob-plugin-openai-translator/releases/download/v4.1.0/openai-translator-4.1.0.bobplugin",
+      "minBobVersion": "1.8.0"
+    },
+    {
       "version": "4.0.3",
       "desc": "重构流式响应处理逻辑，采用更健壮的 SSE 解析器实现，提升代码可维护性。",
       "sha256": "59b00b5d8fb1a04f742e8766c83a67d0be96485da091a5da2e68598e494ccb9b",
