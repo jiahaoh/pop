@@ -2,6 +2,13 @@
   "identifier": "yetone.openai.translator",
   "versions": [
     {
+      "version": "4.2.0",
+      "desc": "Add Chat Completions API support ",
+      "sha256": "8187eb3b0376bc9cb7fb04262670902f835a4daa91ce41940ac36550b36a02ce",
+      "url": "https://github.com/openai-translator/bob-plugin-openai-translator/releases/download/v4.2.0/openai-translator-4.2.0.bobplugin",
+      "minBobVersion": "1.8.0"
+    },
+    {
       "version": "4.1.0",
       "desc": "Add thinking mode toggle for reasoning models",
       "sha256": "29eac1fb2027302b80567ad757f4188f40f3e0444fb1c1c049a73264bbad1e0d",
