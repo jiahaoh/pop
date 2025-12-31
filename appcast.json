@@ -2,6 +2,13 @@
   "identifier": "yetone.openai.translator",
   "versions": [
     {
+      "version": "4.2.2",
+      "desc": "修复 non-streaming 下模型返回连续空行的问题",
+      "sha256": "aae8704c19dde4df65629e650c128c2773dd7f8aa87d65acbb72a4aef84cbaba",
+      "url": "https://github.com/openai-translator/bob-plugin-openai-translator/releases/download/v4.2.2/openai-translator-4.2.2.bobplugin",
+      "minBobVersion": "1.8.0"
+    },
+    {
       "version": "4.2.1",
       "desc": "Fix API error \"Unsupported parameter: 'reasoning.effort' is not supported with this model\" when using non-reasoning models",
       "sha256": "051ecd12622f9658fe917f4b2acb9c8260a3e24e07c7be5c63fb865d2af67769",
