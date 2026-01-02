@@ -2,6 +2,13 @@
   "identifier": "yetone.openai.translator",
   "versions": [
     {
+      "version": "4.2.3",
+      "desc": "Reorder config options for better UX",
+      "sha256": "0b55bd269a8da8d1c6f59f6c934cc3c02c4f7c96d5137d8e20822db4a6f17e95",
+      "url": "https://github.com/openai-translator/bob-plugin-openai-translator/releases/download/v4.2.3/openai-translator-4.2.3.bobplugin",
+      "minBobVersion": "1.8.0"
+    },
+    {
       "version": "4.2.2",
       "desc": "修复 non-streaming 下模型返回连续空行的问题",
       "sha256": "aae8704c19dde4df65629e650c128c2773dd7f8aa87d65acbb72a4aef84cbaba",
