@@ -2,6 +2,13 @@
   "identifier": "yetone.openai.translator",
   "versions": [
     {
+      "version": "4.3.0",
+      "desc": "Add GPT-5.4 series models",
+      "sha256": "7d5eb25d4317e30fdd45ea6cb1ef2d3ae294139cc2af2dfbd09a6f1ea1ac00b7",
+      "url": "https://github.com/openai-translator/bob-plugin-openai-translator/releases/download/v4.3.0/openai-translator-4.3.0.bobplugin",
+      "minBobVersion": "1.8.0"
+    },
+    {
       "version": "4.2.3",
       "desc": "Reorder config options for better UX",
       "sha256": "0b55bd269a8da8d1c6f59f6c934cc3c02c4f7c96d5137d8e20822db4a6f17e95",
