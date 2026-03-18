@@ -93,7 +93,7 @@
 
 - Required
 
-- Default value: `gpt-5-mini`
+- Default value: `gpt-5.4-mini`
 
 - Description
 

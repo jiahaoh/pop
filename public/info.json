@@ -65,7 +65,7 @@
       "type": "text"
     },
     {
-      "defaultValue": "gpt-5-mini",
+      "defaultValue": "gpt-5.4-mini",
       "identifier": "model",
       "menuValues": [
         {
@@ -73,16 +73,16 @@
           "value": "custom"
         },
         {
-          "title": "gpt-5.2",
-          "value": "gpt-5.2"
+          "title": "gpt-5.4",
+          "value": "gpt-5.4"
         },
         {
-          "title": "gpt-5.1",
-          "value": "gpt-5.1"
+          "title": "gpt-5.4-mini",
+          "value": "gpt-5.4-mini"
         },
         {
-          "title": "gpt-5-mini",
-          "value": "gpt-5-mini"
+          "title": "gpt-5.4-nano",
+          "value": "gpt-5.4-nano"
         },
         {
           "title": "gemini-3-flash-preview",
@@ -100,7 +100,7 @@
       "desc": "可选项。当模型选择「自定义模型」时，此项为必填项。请填写有效的模型名称",
       "identifier": "customModel",
       "textConfig": {
-        "placeholderText": "gpt-5.2",
+        "placeholderText": "gpt-5.4",
         "type": "visible"
       },
       "title": "自定义模型",
