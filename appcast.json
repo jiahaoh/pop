@@ -2,6 +2,13 @@
   "identifier": "yetone.openai.translator",
   "versions": [
     {
+      "version": "4.3.1",
+      "desc": "Add support for MiniMax",
+      "sha256": "ed4159f2a287085bb36ca4e6ac9fb3257a6f01ce686a78e7ceceb4348c2d4ae5",
+      "url": "https://github.com/openai-translator/bob-plugin-openai-translator/releases/download/v4.3.1/openai-translator-4.3.1.bobplugin",
+      "minBobVersion": "1.8.0"
+    },
+    {
       "version": "4.3.0",
       "desc": "Add GPT-5.4 series models",
       "sha256": "7d5eb25d4317e30fdd45ea6cb1ef2d3ae294139cc2af2dfbd09a6f1ea1ac00b7",
