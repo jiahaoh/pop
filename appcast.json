@@ -2,6 +2,13 @@
   "identifier": "yetone.openai.translator",
   "versions": [
     {
+      "version": "4.3.2",
+      "desc": "Fix reasoning effort being incorrectly sent to non-GPT models",
+      "sha256": "2f7ce351ca43c555ad162189ea5113d67a7f3ec81e643ff4172a24a363daa89f",
+      "url": "https://github.com/openai-translator/bob-plugin-openai-translator/releases/download/v4.3.2/openai-translator-4.3.2.bobplugin",
+      "minBobVersion": "1.8.0"
+    },
+    {
       "version": "4.3.1",
       "desc": "Add support for MiniMax",
       "sha256": "ed4159f2a287085bb36ca4e6ac9fb3257a6f01ce686a78e7ceceb4348c2d4ae5",
