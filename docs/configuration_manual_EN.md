@@ -175,9 +175,9 @@
 
 - Description
 
-  - Only some models support controlling the thinking mode through this setting
+  - Only GPT-5 series and Gemini 2.5/3 series support this setting; other models are not affected
 
-  - Disabling can reduce latency and token consumption, suitable for translation scenarios
+  - Due to API constraints, reasoning cannot be fully disabled for GPT-5 series — Disable only minimizes the reasoning effort to reduce latency and token usage
 
 ### Temperature
 

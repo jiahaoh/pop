@@ -23,22 +23,15 @@ const findReasoningConfig = (model: string): ReasoningConfig | undefined => {
   return REASONING_CONFIGS.find((config) => model.startsWith(config.prefix));
 };
 
-// Based on Vercel AI SDK: https://github.com/vercel/ai/blob/main/packages/openai/src/openai-language-model-capabilities.ts
 const isReasoningModel = (model: string): boolean => {
-  const isGptChatModel = model.startsWith('gpt-') && model.includes('-chat');
-  return !(
-    model.startsWith('gpt-3') ||
-    model.startsWith('gpt-4') ||
-    model.startsWith('chatgpt-4o') ||
-    isGptChatModel
-  );
+  return findReasoningConfig(model) !== undefined;
 };
 
 export const getDefaultReasoningEffort = (
   model: string,
 ): string | undefined => {
   if (!isReasoningModel(model)) return undefined;
-  return findReasoningConfig(model)?.defaultEffort ?? 'low';
+  return findReasoningConfig(model)?.defaultEffort;
 };
 
 export const supportsTemperature = (
