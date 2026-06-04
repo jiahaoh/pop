@@ -14,6 +14,7 @@ import type {
 import { handleValidateError } from '../utils/error';
 import {
   getDefaultReasoningEffort,
+  getThinkingReasoningEffort,
   supportsTemperature,
 } from '../utils/model-capabilities';
 import { generatePrompts, replacePromptKeywords } from '../utils/prompt';
@@ -194,7 +195,7 @@ export class OpenAiAdapter extends BaseAdapter {
     };
 
     const reasoningEffort = this.isThinkingModeEnabled()
-      ? 'medium'
+      ? getThinkingReasoningEffort(model)
       : getDefaultReasoningEffort(model);
 
     if (reasoningEffort) {

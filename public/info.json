@@ -77,10 +77,6 @@
           "value": "custom"
         },
         {
-          "title": "gpt-5.4",
-          "value": "gpt-5.4"
-        },
-        {
           "title": "gpt-5.4-mini",
           "value": "gpt-5.4-mini"
         },
@@ -89,20 +85,16 @@
           "value": "gpt-5.4-nano"
         },
         {
-          "title": "gemini-3-flash-preview",
-          "value": "gemini-3-flash-preview"
+          "title": "gemini-3.5-flash",
+          "value": "gemini-3.5-flash"
         },
         {
-          "title": "gemini-2.5-flash",
-          "value": "gemini-2.5-flash"
+          "title": "gemini-3.1-flash-lite",
+          "value": "gemini-3.1-flash-lite"
         },
         {
           "title": "MiniMax-M3",
           "value": "MiniMax-M3"
-        },
-        {
-          "title": "MiniMax-M2.7",
-          "value": "MiniMax-M2.7"
         },
         {
           "title": "MiniMax-M2.7-highspeed",
@@ -116,7 +108,7 @@
       "desc": "可选项。当模型选择「自定义模型」时，此项为必填项。请填写有效的模型名称",
       "identifier": "customModel",
       "textConfig": {
-        "placeholderText": "gpt-5.4",
+        "placeholderText": "gpt-5.5",
         "type": "visible"
       },
       "title": "自定义模型",
