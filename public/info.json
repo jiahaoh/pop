@@ -1,8 +1,8 @@
 {
-  "appcast": "https://raw.githubusercontent.com/openai-translator/bob-plugin-openai-translator/main/appcast.json",
+  "appcast": "https://raw.githubusercontent.com/nextai-translator/bob-plugin-openai-translator/main/appcast.json",
   "author": "yetone <yetoneful@gmail.com>",
   "category": "translate",
-  "homepage": "https://github.com/openai-translator/bob-plugin-openai-translator",
+  "homepage": "https://github.com/nextai-translator/bob-plugin-openai-translator",
   "icon": "",
   "identifier": "yetone.openai.translator",
   "minBobVersion": "1.8.0",

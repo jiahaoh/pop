@@ -1,20 +1,20 @@
 <h4 align="right">
-  <strong>简体中文</strong> | <a href="https://github.com/openai-translator/bob-plugin-openai-translator/blob/main/docs/README_EN.md">English</a>
+  <strong>简体中文</strong> | <a href="https://github.com/nextai-translator/bob-plugin-openai-translator/blob/main/docs/README_EN.md">English</a>
 </h4>
 
 <div>
   <h1 align="center">OpenAI Translator Bob Plugin</h1>
   <p align="center">
-    <a href="https://github.com/openai-translator/bob-plugin-openai-translator/releases" target="_blank">
-        <img alt="release" src="https://github.com/openai-translator/bob-plugin-openai-translator/actions/workflows/release.yaml/badge.svg">
+    <a href="https://github.com/nextai-translator/bob-plugin-openai-translator/releases" target="_blank">
+        <img alt="release" src="https://github.com/nextai-translator/bob-plugin-openai-translator/actions/workflows/release.yaml/badge.svg">
     </a>
-    <a href="https://github.com/openai-translator/bob-plugin-openai-translator/releases">
-        <img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/openai-translator/bob-plugin-openai-translator?style=flat">
+    <a href="https://github.com/nextai-translator/bob-plugin-openai-translator/releases">
+        <img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/nextai-translator/bob-plugin-openai-translator?style=flat">
     </a>
-    <a href="https://github.com/openai-translator/bob-plugin-openai-translator/releases">
-        <img alt="GitHub Downloads (all assets, all releases)" src="https://img.shields.io/github/downloads/openai-translator/bob-plugin-openai-translator/total">
+    <a href="https://github.com/nextai-translator/bob-plugin-openai-translator/releases">
+        <img alt="GitHub Downloads (all assets, all releases)" src="https://img.shields.io/github/downloads/nextai-translator/bob-plugin-openai-translator/total">
     </a>
-    <a href="https://github.com/openai-translator/bob-plugin-openai-translator/releases">
+    <a href="https://github.com/nextai-translator/bob-plugin-openai-translator/releases">
         <img alt="language" src="https://img.shields.io/badge/language-TypeScript-brightgreen?style=flat&color=blue">
     </a>
   </p>
@@ -47,7 +47,7 @@ ChatGPT 向我们展示了 GPT 模型的伟大之处，所以我使用 OpenAI �
 
 1. 安装 [Bob](https://bobtranslate.com/guide/#%E5%AE%89%E8%A3%85) (版本 >= 0.50)，一款 macOS 平台的翻译和 OCR 软件
 
-2. 下载此插件: [openai-translator.bobplugin](https://github.com/openai-translator/bob-plugin-openai-translator/releases/latest)
+2. 下载此插件: [openai-translator.bobplugin](https://github.com/nextai-translator/bob-plugin-openai-translator/releases/latest)
 
 3. <details>
 
@@ -81,7 +81,7 @@ ChatGPT 向我们展示了 GPT 模型的伟大之处，所以我使用 OpenAI �
 
 ## 贡献
 
-如果你想要为 OpenAI Translator Bob Plugin 做出贡献，请阅读[贡献指南](.github/contributing.md)中的说明。我们可以先从这个[列表中的问题](https://github.com/openai-translator/bob-plugin-openai-translator/contribute)开始。
+如果你想要为 OpenAI Translator Bob Plugin 做出贡献，请阅读[贡献指南](.github/contributing.md)中的说明。我们可以先从这个[列表中的问题](https://github.com/nextai-translator/bob-plugin-openai-translator/contribute)开始。
 
 ## 感谢
 

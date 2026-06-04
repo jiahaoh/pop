@@ -1,20 +1,20 @@
 <h4 align="right">
-  <a href="https://github.com/openai-translator/bob-plugin-openai-translator/blob/main/README.md">简体中文</a> | <strong>English</strong>
+  <a href="https://github.com/nextai-translator/bob-plugin-openai-translator/blob/main/README.md">简体中文</a> | <strong>English</strong>
 </h4>
 
 <div>
   <h1 align="center">OpenAI Translator Bob Plugin</h1>
   <p align="center">
-    <a href="https://github.com/openai-translator/bob-plugin-openai-translator/releases" target="_blank">
-        <img alt="release" src="https://github.com/openai-translator/bob-plugin-openai-translator/actions/workflows/release.yaml/badge.svg">
+    <a href="https://github.com/nextai-translator/bob-plugin-openai-translator/releases" target="_blank">
+        <img alt="release" src="https://github.com/nextai-translator/bob-plugin-openai-translator/actions/workflows/release.yaml/badge.svg">
     </a>
-    <a href="https://github.com/openai-translator/bob-plugin-openai-translator/releases">
-        <img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/openai-translator/bob-plugin-openai-translator?style=flat">
+    <a href="https://github.com/nextai-translator/bob-plugin-openai-translator/releases">
+        <img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/nextai-translator/bob-plugin-openai-translator?style=flat">
     </a>
-    <a href="https://github.com/openai-translator/bob-plugin-openai-translator/releases">
-        <img alt="GitHub Downloads (all assets, all releases)" src="https://img.shields.io/github/downloads/openai-translator/bob-plugin-openai-translator/total">
+    <a href="https://github.com/nextai-translator/bob-plugin-openai-translator/releases">
+        <img alt="GitHub Downloads (all assets, all releases)" src="https://img.shields.io/github/downloads/nextai-translator/bob-plugin-openai-translator/total">
     </a>
-    <a href="https://github.com/openai-translator/bob-plugin-openai-translator/releases">
+    <a href="https://github.com/nextai-translator/bob-plugin-openai-translator/releases">
         <img alt="language" src="https://img.shields.io/badge/language-TypeScript-brightgreen?style=flat&color=blue">
     </a>
   </p>
@@ -46,7 +46,7 @@ If you don't like combining translation functionality and text polishing, a sepa
 
 1. Install [Bob](https://bobtranslate.com/guide/#%E5%AE%89%E8%A3%85) (version >= 0.50), a macOS translation and OCR software
 
-2. Download this plugin: [openai-translator.bobplugin](https://github.com/openai-translator/bob-plugin-openai-translator/releases/latest)
+2. Download this plugin: [openai-translator.bobplugin](https://github.com/nextai-translator/bob-plugin-openai-translator/releases/latest)
 
 3. <details>
 
@@ -80,7 +80,7 @@ If you don't like combining translation functionality and text polishing, a sepa
 
 ## Contributing
 
-If you want to contribute to Renovate or get a local copy running, please read the instructions in [contributing guidelines](../.github/contributing.md). To get started look at the list of [good first issues](https://github.com/openai-translator/bob-plugin-openai-translator/contribute).
+If you want to contribute to Renovate or get a local copy running, please read the instructions in [contributing guidelines](../.github/contributing.md). To get started look at the list of [good first issues](https://github.com/nextai-translator/bob-plugin-openai-translator/contribute).
 
 ## Thanks
 

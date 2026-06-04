@@ -21,7 +21,7 @@ const validatePluginConfig = (): ServiceError | null => {
       message: '配置错误 - 请填写 API URL',
       addition: '请在插件配置中填写有效的 API URL',
       troubleshootingLink:
-        'https://github.com/openai-translator/bob-plugin-openai-translator/blob/main/docs/configuration_manual_CN.md#api-url',
+        'https://github.com/nextai-translator/bob-plugin-openai-translator/blob/main/docs/configuration_manual_CN.md#api-url',
     };
   }
 

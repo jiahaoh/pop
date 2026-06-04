@@ -2,7 +2,7 @@
 
 ## Triage Issues and Help Out in Discussions
 
-Check out the issues and discussions for the project you want to help. For example, here are [the issues](https://github.com/openai-translator/bob-plugin-openai-translator/issues) board and [discussions](https://github.com/openai-translator/bob-plugin-openai-translator/discussions) for OpenAI Translator Bob Plugin. Helping other users, sharing workarounds, creating reproductions, or even poking into a bug a little bit and sharing your findings makes a huge difference.
+Check out the issues and discussions for the project you want to help. For example, here are [the issues](https://github.com/nextai-translator/bob-plugin-openai-translator/issues) board and [discussions](https://github.com/nextai-translator/bob-plugin-openai-translator/discussions) for OpenAI Translator Bob Plugin. Helping other users, sharing workarounds, creating reproductions, or even poking into a bug a little bit and sharing your findings makes a huge difference.
 
 ## Creating an Issue
 

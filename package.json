@@ -10,7 +10,7 @@
     "openai",
     "translator"
   ],
-  "homepage": "https://github.com/openai-translator/bob-plugin-openai-translator",
+  "homepage": "https://github.com/nextai-translator/bob-plugin-openai-translator",
   "scripts": {
     "build": "bun scripts/build.mts",
     "dev": "bun scripts/package.mts",

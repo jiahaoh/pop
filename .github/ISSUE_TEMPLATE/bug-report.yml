@@ -8,29 +8,29 @@ body:
           value: |
             **非常感谢您的反馈！Thank you very much for your feedback!**
 
-            有关翻译错误的内容请附在此 [issue](https://github.com/openai-translator/bob-plugin-openai-translator/issues/30) 中。
+            有关翻译错误的内容请附在此 [issue](https://github.com/nextai-translator/bob-plugin-openai-translator/issues/30) 中。
 
-            Please post any translation-related errors in this [issue](https://github.com/openai-translator/bob-plugin-openai-translator/issues/30).
+            Please post any translation-related errors in this [issue](https://github.com/nextai-translator/bob-plugin-openai-translator/issues/30).
 
     - type: checkboxes
       attributes:
           label: Please search before asking
           description: |
-            辛苦提 Bug 前，检索一下 [问题](https://github.com/openai-translator/bob-plugin-openai-translator/issues?q=is%3Aissue+sort%3Aupdated-desc+) 列表是否已经存在类似问题。麻烦提供系统版本、录屏或者截图、复现步骤，有助于更好的解决问题。
+            辛苦提 Bug 前，检索一下 [问题](https://github.com/nextai-translator/bob-plugin-openai-translator/issues?q=is%3Aissue+sort%3Aupdated-desc+) 列表是否已经存在类似问题。麻烦提供系统版本、录屏或者截图、复现步骤，有助于更好的解决问题。
 
-            Please search [issues](https://github.com/openai-translator/bob-plugin-openai-translator/issues?q=is%3Aissue+sort%3Aupdated-desc+) to check if your issue has already been reported.
+            Please search [issues](https://github.com/nextai-translator/bob-plugin-openai-translator/issues?q=is%3Aissue+sort%3Aupdated-desc+) to check if your issue has already been reported.
 
           options:
               - label: >
-                    I searched in the [issues](https://github.com/openai-translator/bob-plugin-openai-translator/issues?q=is%3Aissue+sort%3Aupdated-desc+) and found nothing similar.
+                    I searched in the [issues](https://github.com/nextai-translator/bob-plugin-openai-translator/issues?q=is%3Aissue+sort%3Aupdated-desc+) and found nothing similar.
                 required: true
     - type: checkboxes
       attributes:
           label: Please read README
           description: |
-            辛苦提 Bug 前，请确定是按照 README 中的 [使用方法](https://github.com/openai-translator/bob-plugin-openai-translator/tree/main#%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95) 部分安装的。
+            辛苦提 Bug 前，请确定是按照 README 中的 [使用方法](https://github.com/nextai-translator/bob-plugin-openai-translator/tree/main#%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95) 部分安装的。
 
-            Before reporting bugs, please carefully read the [usage instructions]((https://github.com/openai-translator/bob-plugin-openai-translator/tree/main#%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95) section in README
+            Before reporting bugs, please carefully read the [usage instructions]((https://github.com/nextai-translator/bob-plugin-openai-translator/tree/main#%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95) section in README
 
           options:
               - label: I have read the usage instructions section in README in detail.

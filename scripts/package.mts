@@ -66,7 +66,7 @@ async function updateAppcast(
     version: version,
     desc: desc,
     sha256: fileHash,
-    url: `https://github.com/openai-translator/bob-plugin-openai-translator/releases/download/v${version}/openai-translator-${version}.bobplugin`,
+    url: `https://github.com/nextai-translator/bob-plugin-openai-translator/releases/download/v${version}/openai-translator-${version}.bobplugin`,
     minBobVersion: '1.8.0',
   };
 
