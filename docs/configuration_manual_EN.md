@@ -109,7 +109,7 @@
 
 - Required
 
-- Default value: `gpt-5.4-mini`
+- Default value: `gpt-5.6-luna`
 
 - Description
 

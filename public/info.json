@@ -69,7 +69,7 @@
       "type": "text"
     },
     {
-      "defaultValue": "gpt-5.4-mini",
+      "defaultValue": "gpt-5.6-luna",
       "identifier": "model",
       "menuValues": [
         {
@@ -77,12 +77,12 @@
           "value": "custom"
         },
         {
-          "title": "gpt-5.4-mini",
-          "value": "gpt-5.4-mini"
+          "title": "gpt-5.6-luna",
+          "value": "gpt-5.6-luna"
         },
         {
-          "title": "gpt-5.4-nano",
-          "value": "gpt-5.4-nano"
+          "title": "gpt-5.4-mini",
+          "value": "gpt-5.4-mini"
         },
         {
           "title": "gemini-3.5-flash",
@@ -108,7 +108,7 @@
       "desc": "可选项。当模型选择「自定义模型」时，此项为必填项。请填写有效的模型名称",
       "identifier": "customModel",
       "textConfig": {
-        "placeholderText": "gpt-5.5",
+        "placeholderText": "gpt-5.6-terra",
         "type": "visible"
       },
       "title": "自定义模型",
