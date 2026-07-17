@@ -2,6 +2,13 @@
   "identifier": "yetone.openai.translator",
   "versions": [
     {
+      "version": "4.3.4",
+      "desc": "Update OpenAI model list and default to GPT-5.6 Luna",
+      "sha256": "39c7e9a3f8b26a8ae646fa7de9ec67b7347793610dbbbe5fb9c1482640bc68ba",
+      "url": "https://github.com/nextai-translator/bob-plugin-openai-translator/releases/download/v4.3.4/openai-translator-4.3.4.bobplugin",
+      "minBobVersion": "1.8.0"
+    },
+    {
       "version": "4.3.3",
       "desc": "Update model list and fix reasoning effort for GPT-5 pro models",
       "sha256": "706277e116b8db7820e9d8d9147bc35e9a58d89826dae62234a9b6edec3cba71",
