@@ -2,6 +2,14 @@
   "identifier": "yetone.openai.translator",
   "versions": [
     {
+      "version": "5.0.1",
+      "desc": "Preserve streamed provider errors and align API field heights",
+      "sha256": "e5f7afe1f24264bc7a86d0734c009d6091a7777b7b01b1238f3400bb1a17556f",
+      "url": "https://github.com/nextai-translator/bob-plugin-openai-translator/releases/download/v5.0.1/openai-translator-5.0.1.bobplugin",
+      "minBobVersion": "1.8.0",
+      "timestamp": 1786547559373
+    },
+    {
       "version": "5.0.0",
       "desc": "简化 API 配置，更新 Gemini 模型，修复流式响应、取消请求与错误处理",
       "sha256": "f08ed3feda6bf300fe33a4a2a2afd592049e098e5f516e87bc143dcd171936c1",
