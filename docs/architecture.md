@@ -1,6 +1,11 @@
 # Architecture
 
-Last verified: 2026-07-23.
+Implementation last verified: 2026-08-22 at `195d1d6`. External documentation
+and comparable-project sources were last verified on 2026-07-23.
+
+Start with the [maintainer orientation](./maintainer_orientation.md) for a
+code-reading path and full request lifecycle. Use the
+[Bob smoke-test checklist](./bob_smoke_test.md) for installed-host validation.
 
 ## Runtime boundary
 
@@ -9,11 +14,12 @@ Bob runs plugins in JavaScriptCore, not Node.js or a browser. Runtime code may u
 The runtime path is intentionally small:
 
 ```text
-$option
+Bob query + $option
   -> parseOptions()
-  -> resolveModelControls()
+  -> provider dispatch
+  -> prompt construction + resolveModelControls()
   -> provider codec
-  -> shared $http transport
+  -> shared $http transport + SSE parser
   -> Bob stream/completion callbacks
 ```
 
@@ -94,7 +100,9 @@ The metadata test fails if the menu and runtime catalog differ.
 ## Transport invariants
 
 - Streaming and non-streaming requests both receive `query.cancelSignal`.
-- Every translation calls `query.onCompletion` once.
+- Every tested normal terminal path calls `query.onCompletion` once. Streaming
+  and validation have explicit once guards; non-streaming assumes Bob's
+  completion callback does not throw.
 - Provider error events are parsed before text deltas.
 - Invalid SSE is an API error, not an empty success.
 - SSE buffering is limited to 1 MiB.
@@ -112,7 +120,7 @@ The benchmark excludes network latency. Compare results only when the machine, B
 
 ## Release safety
 
-Local packages append a lowercase development build suffix to the repository version only inside the generated archive. Bob ignores lower, equal, and extra-component versions during installation; `<current-version>dev<build>` is newer than the matching stable version and older than the next patch release.
+Local packages append a lowercase development build suffix to the repository version only inside the generated archive. The intended Bob ordering is that lower, equal, and extra-component versions are ignored during installation while `<current-version>dev<build>` is newer than the matching stable version and older than the next patch release. Archive inspection proves the metadata transformation; the installed copy must prove Bob's actual ordering and asynchronous update behavior.
 
 Version metadata and its annotated tag are pushed atomically. A new GitHub release stays unpublished until its plugin asset uploads successfully. Reruns build from the tagged source: an unfinished draft asset may be replaced, while a published release is never modified and its existing asset supplies the Appcast hash.
 
@@ -197,4 +205,4 @@ The linked [Bob 1.8 plugin changes](https://bobtranslate.com/blog/2023-05-18-180
 
 ## Manual Bob verification
 
-Static checks cannot prove behavior inside the installed Bob host. Before release, install the package in Bob 1.8.0 and a current Bob version, confirm every option renders, validate one configured provider, and complete one streaming and one non-streaming translation without a runtime error.
+Static checks cannot prove behavior inside the installed Bob host. Before release, follow the [packaged-plugin smoke test](./bob_smoke_test.md) in Bob 1.8.0 and a current Bob version. It covers copied metadata, settings rendering, provider validation, streaming, non-streaming, cancellation, terminal errors, and log redaction.

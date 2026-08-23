@@ -21,7 +21,9 @@ bun install
 
 Bob runs the built plugin in JavaScriptCore, not Node.js or a browser. Runtime code can use JavaScript built-ins, Bob globals, and bundled pure JavaScript. It cannot use Node.js APIs, browser APIs such as `fetch`, provider SDKs, or files outside the plugin package.
 
-Read the [architecture notes](../docs/architecture.md) before changing configuration, providers, model capabilities, requests, or streaming.
+Read the [maintainer orientation](../docs/maintainer_orientation.md) and
+[architecture notes](../docs/architecture.md) before changing configuration,
+providers, model capabilities, requests, or streaming.
 
 ## Find the owning code
 
@@ -56,7 +58,7 @@ For runtime changes, create a fresh local package:
 bun run package
 ```
 
-This command builds the plugin, checks Bob runtime compatibility, and creates `dist/openai-translator-dev.bobplugin`. Its generated version extends the repository version only inside the archive, so repeated local builds can be installed without consuming the next stable version. Install it in Bob and verify the affected settings and behavior. Changes to request handling require one streaming and one non-streaming translation.
+This command builds the plugin, checks Bob runtime compatibility, and creates `dist/openai-translator-dev.bobplugin`. Its generated version extends the repository version only inside the archive, so repeated local builds can be installed without consuming the next stable version. Install it in Bob and follow the [packaged-plugin smoke-test checklist](../docs/bob_smoke_test.md) for the affected settings and behavior. Changes to request handling require one streaming and one non-streaming translation.
 
 Run `bun run benchmark` when a change can affect a local hot path or bundle size. Live-provider cases are part of `bun run test` but stay skipped unless `RUN_LIVE_TESTS=1` and the corresponding API Key are explicitly supplied. Tests must never read local credential files.
 
