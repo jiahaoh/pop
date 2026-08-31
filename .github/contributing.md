@@ -23,7 +23,10 @@ Bob runs the built plugin in JavaScriptCore, not Node.js or a browser. Runtime c
 
 Read the [maintainer orientation](../docs/maintainer_orientation.md) and
 [architecture notes](../docs/architecture.md) before changing configuration,
-providers, model capabilities, requests, or streaming.
+providers, model capabilities, requests, or streaming. Read the
+[Pop product contract](../docs/product_contract.md) before changing actions,
+commands, prompts, output behavior, release identity, or saved-setting
+compatibility.
 
 ## Find the owning code
 
@@ -31,6 +34,7 @@ providers, model capabilities, requests, or streaming.
 | --- | --- |
 | Settings shown in Bob | `public/info.json`, `src/config.ts` |
 | Built-in models or reasoning behavior | `src/utils/model-capabilities.ts` |
+| Commands, actions, or output contracts | `docs/product_contract.md`, then `src/action/` and `src/utils/prompt.ts` |
 | Prompt behavior | `src/utils/prompt.ts` |
 | Provider request or response format | `src/adapter/` |
 | Cancellation, completion, or SSE handling | `src/adapter/base.ts`, `src/utils/sse.ts` |

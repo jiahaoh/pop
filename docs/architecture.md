@@ -6,6 +6,9 @@ and comparable-project sources were last verified on 2026-07-23.
 Start with the [maintainer orientation](./maintainer_orientation.md) for a
 code-reading path and full request lifecycle. Use the
 [Bob smoke-test checklist](./bob_smoke_test.md) for installed-host validation.
+The [Pop product contract](./product_contract.md) defines the M1-approved action,
+command, output, release-identity, and compatibility behavior that M2 will
+implement; it does not describe the current runtime until that work lands.
 
 ## Runtime boundary
 

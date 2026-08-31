@@ -4,8 +4,9 @@ Implementation verified: 2026-08-22 at `195d1d6`.
 
 This guide is the shortest path from an unfamiliar checkout to a working model
 of the plugin. Read [architecture.md](./architecture.md) for design rationale and
-source coverage, and use [bob_smoke_test.md](./bob_smoke_test.md) when validating
-an installed package.
+source coverage, read the [Pop product contract](./product_contract.md) before
+implementing action behavior, and use [bob_smoke_test.md](./bob_smoke_test.md)
+when validating an installed package.
 
 ## Working model
 
@@ -21,9 +22,10 @@ separate responsibilities:
    final Bob callback.
 
 Task semantics and provider transport are deliberately different axes. Today,
-the task is defined by the editable system and user prompt templates. A future
-action engine belongs before prompt construction; it should not leak action
-routing into provider codecs.
+the task is defined by the editable system and user prompt templates. The
+M1-approved action engine belongs before prompt construction; it must not leak
+action routing into provider codecs. Its frozen behavior and M2 entry points are
+defined in the [product contract](./product_contract.md).
 
 ## Source-of-truth order
 
