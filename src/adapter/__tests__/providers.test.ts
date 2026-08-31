@@ -1,5 +1,4 @@
 import { describe, expect, it } from 'bun:test';
-import type { TextTranslateQuery } from '@bob-translate/types';
 import { AzureOpenAiAdapter } from '../azure-openai';
 import { GeminiAdapter } from '../gemini';
 import { getServiceAdapter } from '../index';
@@ -7,11 +6,10 @@ import { MiniMaxAdapter } from '../minimax';
 import { OpenAiAdapter } from '../openai';
 import { createTestConfig } from './fixtures';
 
-const query = {
-  text: 'Hello',
-  detectFrom: 'en',
-  detectTo: 'zh-Hans',
-} as unknown as TextTranslateQuery;
+const prompts = Object.freeze({
+  system: 'Translate from en to zh-CN. Return only the result.',
+  user: 'Hello',
+});
 
 describe('provider dispatch', () => {
   it('derives the adapter from the model and optional API URL', () => {
@@ -50,7 +48,7 @@ describe('provider dispatch', () => {
 describe('OpenAI protocol codec', () => {
   it('builds a minimal Responses request and omits temperature', () => {
     const adapter = new OpenAiAdapter(createTestConfig());
-    const body = adapter.buildRequestBody(query);
+    const body = adapter.buildRequestBody(prompts);
     expect(adapter.getTextGenerationUrl()).toBe(
       'https://api.openai.com/v1/responses',
     );
@@ -62,13 +60,13 @@ describe('OpenAI protocol codec', () => {
     expect(body.stream).toBe(true);
     expect(body.reasoning).toBeUndefined();
     expect(body.temperature).toBeUndefined();
-    expect(body.instructions).toBeString();
-    expect(body.input).toBeString();
+    expect(body.instructions).toBe(prompts.system);
+    expect(body.input).toBe(prompts.user);
 
     const disabled = new OpenAiAdapter(
       createTestConfig({ reasoningMode: 'disable' }),
     );
-    expect(disabled.buildRequestBody(query).reasoning).toEqual({
+    expect(disabled.buildRequestBody(prompts).reasoning).toEqual({
       effort: 'none',
     });
   });
@@ -81,8 +79,11 @@ describe('OpenAI protocol codec', () => {
         apiUrl: 'http://localhost:11434/v1/chat/completions',
       }),
     );
-    const body = adapter.buildRequestBody(query);
-    expect(body.messages).toBeArray();
+    const body = adapter.buildRequestBody(prompts);
+    expect(body.messages).toEqual([
+      { role: 'system', content: prompts.system },
+      { role: 'user', content: prompts.user },
+    ]);
     expect(body.instructions).toBeUndefined();
     expect(body.reasoning_effort).toBeUndefined();
     expect(body.temperature).toBeUndefined();
@@ -152,7 +153,7 @@ describe('Azure OpenAI codec', () => {
         apiUrl: 'https://resource.openai.azure.com/openai/v1/responses',
       }),
     );
-    const body = adapter.buildRequestBody(query);
+    const body = adapter.buildRequestBody(prompts);
     expect(adapter.getTextGenerationUrl()).toBe(
       'https://resource.openai.azure.com/openai/v1/responses',
     );
@@ -169,12 +170,18 @@ describe('Gemini codec', () => {
         model: 'gemini-3.6-flash',
       }),
     );
-    const body = adapter.buildRequestBody(query);
+    const body = adapter.buildRequestBody(prompts);
     expect(adapter.getTextGenerationUrl()).toBe(
       'https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:streamGenerateContent?alt=sse',
     );
     expect(adapter.buildHeaders('key')['x-goog-api-key']).toBe('key');
     expect(body.generationConfig).toBeUndefined();
+    expect(body.system_instruction).toEqual({
+      parts: [{ text: prompts.system }],
+    });
+    expect(body.contents).toEqual([
+      { role: 'user', parts: [{ text: prompts.user }] },
+    ]);
 
     const disabled = new GeminiAdapter(
       createTestConfig({
@@ -182,7 +189,7 @@ describe('Gemini codec', () => {
         reasoningMode: 'disable',
       }),
     );
-    expect(disabled.buildRequestBody(query).generationConfig).toEqual({
+    expect(disabled.buildRequestBody(prompts).generationConfig).toEqual({
       thinkingConfig: { thinkingLevel: 'minimal' },
     });
   });
@@ -210,11 +217,15 @@ describe('MiniMax codec', () => {
     const adapter = new MiniMaxAdapter(
       createTestConfig({ model: 'MiniMax-M3' }),
     );
-    const body = adapter.buildRequestBody(query);
+    const body = adapter.buildRequestBody(prompts);
     expect(adapter.getTextGenerationUrl()).toBe(
       'https://api.minimax.io/v1/chat/completions',
     );
     expect(body.reasoning_split).toBe(true);
+    expect(body.messages).toEqual([
+      { role: 'system', content: prompts.system },
+      { role: 'user', content: prompts.user },
+    ]);
     expect(body.thinking).toBeUndefined();
     expect(body.temperature).toBeUndefined();
   });
@@ -226,7 +237,7 @@ describe('MiniMax codec', () => {
         reasoningMode: 'disable',
       }),
     );
-    expect(disabled.buildRequestBody(query).thinking).toEqual({
+    expect(disabled.buildRequestBody(prompts).thinking).toEqual({
       type: 'disabled',
     });
   });

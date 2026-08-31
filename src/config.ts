@@ -1,4 +1,5 @@
 import type { ServiceError } from '@bob-translate/types';
+import { normalizeCustomActionCommand } from './action/command';
 import type {
   ApiProtocol,
   PluginConfig,
@@ -130,6 +131,28 @@ const parseStream = (value: string): boolean => {
   );
 };
 
+const parseCustomActionInstruction = (value: string): string => {
+  if (!value.trim()) return '';
+  if (/\$text\b/.test(value)) {
+    throw createConfigError(
+      '配置错误：自定义任务指令不能包含 $text',
+      '请把 $text 放在自定义正文模板中，使运行时正文与 system instruction 保持分离。',
+    );
+  }
+  return value;
+};
+
+const parseCustomActionUserTemplate = (value: string): string => {
+  const template = value || '$text';
+  if (!/\$text\b/.test(template)) {
+    throw createConfigError(
+      '配置错误：自定义正文模板缺少 $text',
+      '自定义正文模板必须包含 $text，避免丢失运行时正文。',
+    );
+  }
+  return template;
+};
+
 const inferOfficialProvider = (model: string): ServiceProvider => {
   const catalogProvider = getCatalogModelProvider(model);
   if (catalogProvider) return catalogProvider;
@@ -169,13 +192,19 @@ export const parseOptions = (
   const definition = PROVIDERS[provider];
   const endpoint = configuredEndpoint || definition.defaultEndpoint;
   const protocol = configuredProtocol || definition.protocol;
-  const customSystemPrompt = options.customSystemPrompt || '';
-  const customUserPrompt = options.customUserPrompt || '';
 
   const config: PluginConfig = {
+    additionalRequirements: options.additionalRequirements || '',
     apiKeys: parseApiKeys(options.apiKeys || ''),
-    customSystemPrompt: customSystemPrompt.trim() ? customSystemPrompt : '',
-    customUserPrompt: customUserPrompt.trim() ? customUserPrompt : '',
+    customActionCommand: normalizeCustomActionCommand(
+      options.customActionCommand || '',
+    ),
+    customActionInstruction: parseCustomActionInstruction(
+      options.customActionInstruction || '',
+    ),
+    customActionUserTemplate: parseCustomActionUserTemplate(
+      options.customActionUserTemplate || '$text',
+    ),
     endpoint,
     model,
     protocol,

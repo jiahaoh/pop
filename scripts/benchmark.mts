@@ -2,9 +2,12 @@
 
 import path from 'node:path';
 import type { TextTranslateQuery } from '@bob-translate/types';
+import { parseCommand } from '../src/action/command';
+import { resolveTask } from '../src/action/resolve';
 import { getServiceAdapter } from '../src/adapter';
 import { parseOptions } from '../src/config';
 import { resolveModelControls } from '../src/utils/model-capabilities';
+import { createPrompts } from '../src/utils/prompt';
 import { SseStreamHandler } from '../src/utils/sse';
 
 const SAMPLES = 9;
@@ -43,6 +46,10 @@ const query = {
   detectTo: 'zh-Hans',
   onStream: () => {},
 } as unknown as TextTranslateQuery;
+const prompts = createPrompts(
+  resolveTask(query, parseCommand(query.text, config.customActionCommand)),
+  config,
+);
 
 const streamParser = new SseStreamHandler({
   troubleshootingLink: '',
@@ -54,6 +61,12 @@ const streamEvent =
   'event: response.output_text.delta\ndata: {"type":"response.output_text.delta","delta":"x"}\n\n';
 
 const results = {
+  actionResolution: measure(() => {
+    createPrompts(
+      resolveTask(query, parseCommand(query.text, config.customActionCommand)),
+      config,
+    );
+  }),
   capabilityResolution: measure(() => {
     resolveModelControls('openai', 'gpt-5.6-luna', 'default');
   }),
@@ -61,7 +74,7 @@ const results = {
     getServiceAdapter(config);
   }),
   requestConstruction: measure(() => {
-    adapter.buildRequestBody(query);
+    adapter.buildRequestBody(prompts);
   }),
   streamEventParsing: measure(() => {
     streamParser.reset(query);

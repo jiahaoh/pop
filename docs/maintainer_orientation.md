@@ -1,6 +1,6 @@
 # Maintainer orientation
 
-Implementation verified: 2026-08-22 at `195d1d6`.
+Implementation verified: 2026-08-31 on the Milestone 2 branch.
 
 This guide is the shortest path from an unfamiliar checkout to a working model
 of the plugin. Read [architecture.md](./architecture.md) for design rationale and
@@ -10,22 +10,23 @@ when validating an installed package.
 
 ## Working model
 
-The shipped plugin is a small JavaScriptCore program hosted by Bob. It has four
+The shipped plugin is a small JavaScriptCore program hosted by Bob. It has five
 separate responsibilities:
 
 1. The Bob entry point receives a query or a validation request.
 2. Configuration code turns Bob's flat string options into one immutable
    runtime configuration.
-3. A provider adapter translates shared prompt and model-control inputs into a
+3. The action engine parses one explicit command or resolves a deterministic
+   default task, then builds provider-neutral system and user text.
+4. A provider adapter translates shared prompt and model-control inputs into a
    provider-specific wire request and response.
-4. Shared transport code owns cancellation, streaming, terminal checks, and the
+5. Shared transport code owns cancellation, streaming, terminal checks, and the
    final Bob callback.
 
-Task semantics and provider transport are deliberately different axes. Today,
-the task is defined by the editable system and user prompt templates. The
-M1-approved action engine belongs before prompt construction; it must not leak
-action routing into provider codecs. Its frozen behavior and M2 entry points are
-defined in the [product contract](./product_contract.md).
+Task semantics and provider transport are deliberately different axes. Command
+parsing, task profiles, default routing, and prompt construction all finish
+before a provider codec receives a `PromptPair`. The frozen behavior and entry
+points are defined in the [product contract](./product_contract.md).
 
 ## Source-of-truth order
 
@@ -47,14 +48,15 @@ ordering, or JavaScriptCore compatibility.
 | 1 | `public/info.json` | What does Bob display and persist? |
 | 2 | `src/main.ts` | Which functions does Bob call? |
 | 3 | `src/config.ts` and `src/types.ts` | How do strings become a provider, protocol, and immutable config? |
-| 4 | `src/utils/prompt.ts` | How does a Bob query become system and user text? |
-| 5 | `src/utils/model-capabilities.ts` | Which optional model controls are safe to send? |
-| 6 | `src/adapter/index.ts` and one provider adapter | How is the wire codec selected and shaped? |
-| 7 | `src/adapter/base.ts` | Where do transport, cancellation, validation, and terminal callbacks live? |
-| 8 | `src/utils/sse.ts` | How are arbitrary SSE chunks converted into cumulative Bob stream updates? |
-| 9 | `src/utils/error.ts` | How are thrown values normalized into `ServiceError`? |
-| 10 | `scripts/build.mts`, `scripts/check-runtime.mts`, `scripts/package.mts` | How does source become an installable package? |
-| 11 | `src/**/__tests__`, `scripts/__tests__`, `tests/live` | Which contracts are static, mocked, or opt-in live checks? |
+| 4 | `src/action/command.ts`, `profiles.ts`, and `resolve.ts` | How is one action selected without provider knowledge? |
+| 5 | `src/utils/prompt.ts` | How does a resolved task become one `PromptPair`? |
+| 6 | `src/utils/model-capabilities.ts` | Which optional model controls are safe to send? |
+| 7 | `src/adapter/index.ts` and one provider adapter | How is the wire codec selected and shaped? |
+| 8 | `src/adapter/base.ts` | Where do transport, cancellation, validation, and terminal callbacks live? |
+| 9 | `src/utils/sse.ts` | How are arbitrary SSE chunks converted into cumulative Bob stream updates? |
+| 10 | `src/utils/error.ts` | How are thrown values normalized into `ServiceError`? |
+| 11 | `scripts/build.mts`, `scripts/check-runtime.mts`, `scripts/package.mts` | How does source become an installable package? |
+| 12 | `src/**/__tests__`, `scripts/__tests__`, `tests/live` | Which contracts are static, mocked, or opt-in live checks? |
 
 ## Request lifecycle
 
@@ -66,11 +68,14 @@ flowchart TD
   Entry --> Config[parseOptions from Bob option]
   ValidateEntry --> Config
   Config --> Key[select one configured API key]
+  Config --> Command[parseCommand]
+  Command --> Resolve[resolveTask and TaskProfile]
+  Resolve --> Prompt[createPrompts to PromptPair]
   Config --> Dispatch[getServiceAdapter]
   Dispatch --> Adapter[provider adapter]
 
-  Adapter -->|translate| Prompt[createPrompts]
   Adapter --> Controls[resolveModelControls]
+  Adapter --> Wire[build URL headers and body]
   Prompt --> Wire[build URL headers and body]
   Controls --> Wire
   Key --> Wire
@@ -105,8 +110,11 @@ The important boundaries are:
   formats.
 - `parseOptions()` is the only reader of Bob's `$option` values. Adapters receive
   a validated `PluginConfig` and never read global settings.
-- Prompt construction produces provider-neutral strings. Provider adapters place
-  those strings into `instructions`/`input`, `messages`, or Gemini `contents`.
+- `parseCommand()` and `resolveTask()` are pure provider-neutral steps. Unknown
+  commands, empty bodies, and invalid Custom settings complete before a request.
+- Prompt construction produces one provider-neutral `PromptPair`. Provider
+  adapters place it into `instructions`/`input`, `messages`, or Gemini
+  `contents` without choosing or interpreting the action.
 - Model capability resolution produces a small normalized control object.
   Adapters translate it into `reasoning`, `reasoning_effort`, `thinkingConfig`,
   or `thinking`.
@@ -129,8 +137,8 @@ The important boundaries are:
 4. If a URL is configured, detect Azure from its host or path, retain the native
    MiniMax codec for verified official MiniMax Chat Completions hosts, and route
    every other URL through the OpenAI-compatible adapter.
-5. Parse reasoning and streaming menus, preserve intentionally non-empty prompt
-   whitespace, freeze the API-key array, and freeze the final configuration.
+5. Parse reasoning, streaming, shared requirements, and one optional Custom
+   action; freeze the API-key array and final configuration.
 
 The URL selects the protocol before adapter construction. This prevents a
 provider menu, base URL field, and API path field from becoming three separate
@@ -167,8 +175,8 @@ Bob smoke test; Bun tests cannot prove it.
 
 | Change | Primary entry | Usually also update | Boundary to preserve |
 | --- | --- | --- | --- |
-| Add an action or task | New task resolver/profile before `createPrompts()` | Prompt tests, command-routing tests, user docs | Do not put task routing in provider adapters |
-| Change prompt variables or defaults | `src/utils/prompt.ts` | `public/info.json`, metadata/prompt tests, both manuals | Keep raw input semantics explicit for each task |
+| Add an action or task | `src/action/command.ts`, `profiles.ts`, and `resolve.ts` | Prompt tests, command-routing tests, user docs | Do not put task routing in provider adapters |
+| Change task prompts or variables | `src/utils/prompt.ts` | Profile/prompt tests, settings metadata, both manuals | Keep runtime text out of system instructions |
 | Add a provider | `src/types.ts`, `src/config.ts`, `src/adapter/index.ts`, new adapter | Provider and transport tests, manuals, architecture sources | Reuse `BaseAdapter`; keep credentials and wire rules in the adapter |
 | Add a protocol to an existing provider | Provider adapter plus `ApiProtocol` and URL detection | Request-body, response, stream, and validation tests | Do not infer native formats from arbitrary URLs |
 | Add a curated model | `MODEL_CATALOG` | Sorted `public/info.json` model menu, metadata/docs tests, both manuals | A catalog entry does not imply optional capability support |

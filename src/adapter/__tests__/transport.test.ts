@@ -47,6 +47,11 @@ const createAdapter = (stream: boolean): OpenAiAdapter =>
     createTestConfig({ stream: stream ? 'enable' : 'disable' }),
   );
 
+const prompts = Object.freeze({
+  system: 'Translate from en to zh-CN. Return only the result.',
+  user: 'Hello',
+});
+
 const createQuery = () => {
   const onCompletion = mock(
     (_result: Parameters<TextTranslateQuery['onCompletion']>[0]) => {},
@@ -86,7 +91,7 @@ describe('shared transport', () => {
       return successResponse({ output_text: '你好' });
     };
 
-    await createAdapter(false).translate(query, 'key');
+    await createAdapter(false).translate(query, prompts, 'key');
 
     expect(captured?.cancelSignal).toBe(cancelSignal);
     expect(onCompletion).toHaveBeenCalledTimes(1);
@@ -122,7 +127,7 @@ describe('shared transport', () => {
       });
     };
 
-    await createAdapter(true).translate(query, 'key');
+    await createAdapter(true).translate(query, prompts, 'key');
 
     expect(captured?.cancelSignal).toBe(cancelSignal);
     expect(onStream).toHaveBeenCalledTimes(1);
@@ -146,7 +151,7 @@ describe('shared transport', () => {
       config.handler?.(streamCompletionResponse());
     };
 
-    await createAdapter(true).translate(query, 'key');
+    await createAdapter(true).translate(query, prompts, 'key');
 
     expect(onStream).toHaveBeenCalledTimes(1);
     expect(onCompletion).toHaveBeenCalledTimes(1);
@@ -165,7 +170,7 @@ describe('shared transport', () => {
       config.handler?.(streamCompletionResponse());
     };
 
-    await createAdapter(true).translate(query, 'key');
+    await createAdapter(true).translate(query, prompts, 'key');
 
     expect(onCompletion).toHaveBeenCalledTimes(1);
     expect(onCompletion.mock.calls[0][0]).toMatchObject({
@@ -187,7 +192,7 @@ describe('shared transport', () => {
       config.handler?.(streamCompletionResponse());
     };
 
-    await createAdapter(true).translate(query, 'key');
+    await createAdapter(true).translate(query, prompts, 'key');
 
     expect(onStream).toHaveBeenCalledTimes(1);
     expect(onCompletion).toHaveBeenCalledTimes(1);
@@ -206,7 +211,7 @@ describe('shared transport', () => {
       config.handler?.(streamCompletionResponse());
     };
 
-    await createAdapter(true).translate(query, 'key');
+    await createAdapter(true).translate(query, prompts, 'key');
 
     expect(onCompletion).toHaveBeenCalledTimes(1);
     expect(onCompletion.mock.calls[0][0]).toMatchObject({
@@ -234,7 +239,7 @@ describe('shared transport', () => {
       config.handler?.(streamCompletionResponse());
     };
 
-    await createAdapter(true).translate(query, 'key');
+    await createAdapter(true).translate(query, prompts, 'key');
 
     expect(onCompletion).toHaveBeenCalledTimes(1);
     expect(onCompletion.mock.calls[0][0]).toMatchObject({
@@ -252,7 +257,7 @@ describe('shared transport', () => {
       config.handler?.(streamCompletionResponse());
     };
 
-    await createAdapter(true).translate(query, 'key');
+    await createAdapter(true).translate(query, prompts, 'key');
 
     expect(onCompletion).toHaveBeenCalledTimes(1);
     expect(onCompletion.mock.calls[0][0]).toMatchObject({
@@ -293,7 +298,7 @@ describe('shared transport', () => {
         config.handler?.(streamCompletionResponse());
       };
 
-      await adapter.translate(query, 'key');
+      await adapter.translate(query, prompts, 'key');
 
       expect(onCompletion).toHaveBeenCalledTimes(1);
       expect(onCompletion.mock.calls[0][0]).toMatchObject({
@@ -324,7 +329,7 @@ describe('shared transport', () => {
         model: 'MiniMax-M3',
       }),
     );
-    await adapter.translate(query, 'key');
+    await adapter.translate(query, prompts, 'key');
 
     expect(adapter).toBeInstanceOf(MiniMaxAdapter);
     expect(captured?.body).toMatchObject({ reasoning_split: true });
@@ -344,7 +349,7 @@ describe('shared transport', () => {
       config.handler?.(streamCompletionResponse(401));
     };
 
-    await createAdapter(true).translate(query, 'key');
+    await createAdapter(true).translate(query, prompts, 'key');
 
     expect(onCompletion.mock.calls[0][0]).toMatchObject({
       error: { type: 'secretKey', message: 'bad key' },
@@ -365,7 +370,7 @@ describe('shared transport', () => {
       config.handler?.(streamCompletionResponse(401));
     };
 
-    await createAdapter(true).translate(query, 'key');
+    await createAdapter(true).translate(query, prompts, 'key');
 
     expect(onCompletion.mock.calls[0][0]).toMatchObject({
       error: { type: 'secretKey', message: 'bad key' },
@@ -383,7 +388,7 @@ describe('shared transport', () => {
       );
     };
 
-    await createAdapter(true).translate(query, 'key');
+    await createAdapter(true).translate(query, prompts, 'key');
 
     expect(onCompletion.mock.calls[0][0]).toMatchObject({
       error: {
@@ -409,7 +414,7 @@ describe('shared transport', () => {
         },
       }) as HttpResponse;
 
-    await createAdapter(false).translate(query, 'key');
+    await createAdapter(false).translate(query, prompts, 'key');
 
     expect(onCompletion.mock.calls[0][0]).toMatchObject({
       error: {
@@ -425,7 +430,7 @@ describe('shared transport', () => {
       throw new Error('Connection reset');
     };
 
-    await createAdapter(false).translate(query, 'key');
+    await createAdapter(false).translate(query, prompts, 'key');
 
     expect(onCompletion).toHaveBeenCalledTimes(1);
     expect(onCompletion.mock.calls[0][0]).toMatchObject({
@@ -439,7 +444,7 @@ describe('shared transport', () => {
       throw new Error('connection lost');
     };
 
-    await createAdapter(true).translate(query, 'key');
+    await createAdapter(true).translate(query, prompts, 'key');
 
     expect(onCompletion).toHaveBeenCalledTimes(1);
     expect(onCompletion.mock.calls[0][0]).toMatchObject({
@@ -462,7 +467,7 @@ describe('shared transport', () => {
       }),
     );
 
-    await adapter.translate(query, 'key');
+    await adapter.translate(query, prompts, 'key');
 
     expect(onCompletion).toHaveBeenCalledTimes(1);
     expect(onCompletion.mock.calls[0][0]).toMatchObject({
@@ -680,7 +685,7 @@ describe('MiniMax output normalization', () => {
         }),
       );
 
-      await adapter.translate(query, 'key');
+      await adapter.translate(query, prompts, 'key');
 
       expect(onCompletion).toHaveBeenCalledTimes(1);
       expect(onCompletion.mock.calls[0][0]).toMatchObject({

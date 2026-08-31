@@ -1,15 +1,21 @@
 import type { PluginValidate, TextTranslate } from '@bob-translate/types';
+import { parseCommand } from './action/command';
+import { resolveTask } from './action/resolve';
 import { getServiceAdapter } from './adapter';
 import { parseOptions, selectApiKey } from './config';
 import { supportLanguageList } from './lang';
 import { handleGeneralError, handleValidateError } from './utils/error';
+import { createPrompts } from './utils/prompt';
 
 export const translate: TextTranslate = (query) => {
   try {
     const config = parseOptions($option);
+    const command = parseCommand(query.text, config.customActionCommand);
+    const task = resolveTask(query, command);
+    const prompts = createPrompts(task, config);
     const adapter = getServiceAdapter(config);
     void adapter
-      .translate(query, selectApiKey(config.apiKeys))
+      .translate(query, prompts, selectApiKey(config.apiKeys))
       .catch((error: unknown) => handleGeneralError(query, error));
   } catch (error) {
     handleGeneralError(query, error);

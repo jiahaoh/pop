@@ -6,7 +6,7 @@ import type {
 } from '@bob-translate/types';
 import type { EventSourceMessage } from 'eventsource-parser';
 import { PROVIDERS } from '../config';
-import type { PluginConfig, ServiceAdapter } from '../types';
+import type { PluginConfig, PromptPair, ServiceAdapter } from '../types';
 import {
   convertToServiceError,
   handleGeneralError,
@@ -59,7 +59,7 @@ export abstract class BaseAdapter implements ServiceAdapter {
 
   abstract buildHeaders(apiKey: string): Record<string, string>;
 
-  abstract buildRequestBody(query: TextTranslateQuery): Record<string, unknown>;
+  abstract buildRequestBody(prompts: PromptPair): Record<string, unknown>;
 
   abstract getTextGenerationUrl(): string;
 
@@ -72,12 +72,13 @@ export abstract class BaseAdapter implements ServiceAdapter {
 
   public async translate(
     query: TextTranslateQuery,
+    prompts: PromptPair,
     apiKey: string,
   ): Promise<void> {
     try {
       const url = this.getTextGenerationUrl();
       const headers = this.buildHeaders(apiKey);
-      const body = this.buildRequestBody(query);
+      const body = this.buildRequestBody(prompts);
 
       if (this.config.stream) {
         await this.makeStreamRequest(url, headers, body, query);

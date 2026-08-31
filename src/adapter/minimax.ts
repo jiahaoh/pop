@@ -3,6 +3,7 @@ import type {
   ValidationCompletion,
 } from '@bob-translate/types';
 import type { EventSourceMessage } from 'eventsource-parser';
+import type { PromptPair } from '../types';
 import { resolveModelControls } from '../utils/model-capabilities';
 import { OpenAiAdapter } from './openai';
 
@@ -25,10 +26,10 @@ export class MiniMaxAdapter extends OpenAiAdapter {
   }
 
   public override buildRequestBody(
-    query: TextTranslateQuery,
+    prompts: PromptPair,
   ): Record<string, unknown> {
     this.streamedText = '';
-    const body = super.buildRequestBody(query);
+    const body = super.buildRequestBody(prompts);
     body.reasoning_split = true;
     const controls = resolveModelControls(
       this.config.provider,

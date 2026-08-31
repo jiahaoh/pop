@@ -4,7 +4,7 @@
 >
 > Linear：W-9、W-10、W-11、W-12
 >
-> 本文只定义产品行为与兼容边界；M2 才实现 action engine，M4 才修改正式发布 metadata
+> 本文定义产品行为与兼容边界；M2 已在开发分支实现 action engine，M4 才修改正式发布 metadata
 
 ## 一句话定位
 
@@ -186,7 +186,7 @@ Bob 不会把一个 identifier 下保存的设置自动带到另一个 identifie
 
 ## M2 实现交接
 
-M2 的运行路径应为：
+M2 的当前运行路径为：
 
 ```text
 query
@@ -231,3 +231,17 @@ M2 可以在 `TaskProfile` 中记录推荐 reasoning profile，但不会扩展�
 ## M1 完成状态
 
 M1 已没有阻塞 M2 的未决产品选择。多个自定义 action、AI intent classification、多轮对话、动态 prompt 下载、Temperature、工具调用、联网搜索和附件均不属于当前 MVP。
+
+## M2 本地实现状态
+
+2026-08-31，W-14、W-13 和 W-16 已在 Milestone 2 分支实现：
+
+* `src/action/command.ts` 覆盖冻结的命令、alias、转义和错误语义
+* `src/action/profiles.ts` 与 `src/action/resolve.ts` 固化六种 action 和默认路由
+* `src/utils/prompt.ts` 根据 `ResolvedTask` 构建 `PromptPair`，并保持 Transform / Custom 的 runtime text 与 system instruction 分离
+* `src/main.ts` 在 adapter 之前完成 action orchestration；OpenAI Responses、Chat Completions、Gemini 和 MiniMax codec 只消费 `PromptPair`
+* Bun 1.2.19 mock 与 regression suite 通过 92 项，2 项 opt-in MiniMax live tests 按设计跳过；build 与静态 runtime compatibility check 通过
+
+这些证据只覆盖纯函数、mock provider、request body、transport regression、bundle export 和禁止 API 检查。它们不证明 Bob JavaScriptCore 实际执行、设置表单渲染/保存、安装更新顺序或真实 provider 行为。
+
+M2 分支仍是非发布中间态：新的 action settings 已由 `parseOptions()` 接受，但 `public/info.json` 的紧凑表单属于 M3；正式 name、identifier、Appcast、配置手册、迁移说明和 Bob smoke test 仍属于 M4。

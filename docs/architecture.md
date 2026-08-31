@@ -1,14 +1,14 @@
 # Architecture
 
-Implementation last verified: 2026-08-22 at `195d1d6`. External documentation
-and comparable-project sources were last verified on 2026-07-23.
+Implementation last verified: 2026-08-31 on the Milestone 2 branch. External
+documentation and comparable-project sources were last verified on 2026-07-23.
 
 Start with the [maintainer orientation](./maintainer_orientation.md) for a
 code-reading path and full request lifecycle. Use the
 [Bob smoke-test checklist](./bob_smoke_test.md) for installed-host validation.
-The [Pop product contract](./product_contract.md) defines the M1-approved action,
-command, output, release-identity, and compatibility behavior that M2 will
-implement; it does not describe the current runtime until that work lands.
+The [Pop product contract](./product_contract.md) defines the action, command,
+output, release-identity, and compatibility behavior implemented by the M2
+runtime and staged for later settings and release work.
 
 ## Runtime boundary
 
@@ -19,21 +19,25 @@ The runtime path is intentionally small:
 ```text
 Bob query + $option
   -> parseOptions()
-  -> provider dispatch
-  -> prompt construction + resolveModelControls()
-  -> provider codec
+  -> parseCommand()
+  -> resolveTask() + TaskProfile registry
+  -> createPrompts()
+  -> provider dispatch + resolveModelControls()
+  -> provider codec from PromptPair
   -> shared $http transport + SSE parser
   -> Bob stream/completion callbacks
 ```
 
 - `src/main.ts` is the Bob entry point.
 - `src/config.ts` parses and freezes one configuration object, derives the provider, and rejects invalid complete API URLs.
+- `src/action/*.ts` owns command grammar, deterministic default routing, and the six provider-neutral task profiles.
+- `src/utils/prompt.ts` turns one resolved task into a provider-neutral `PromptPair` while keeping runtime text separate from system instructions.
 - `src/utils/model-capabilities.ts` owns the curated model catalog and model-specific reasoning mappings.
 - `src/adapter/*.ts` owns provider URL, authentication, wire request, wire response, validation, and stream event shapes.
 - `src/adapter/base.ts` owns cancellation, network lifecycle, and exactly-once completion.
 - `src/utils/sse.ts` owns bounded SSE parsing independently of provider capability rules.
 
-Adapters never read `$option`. Provider codecs receive a validated configuration and do not know how Bob stores options.
+Adapters never read `$option`, parse commands, or choose actions. Provider codecs receive a validated configuration plus a `PromptPair` and do not know how Bob stores options.
 
 ## Configuration contract
 
@@ -46,9 +50,15 @@ The current configuration uses these decisions:
 - API URL is optional and complete. The `/responses` or `/chat/completions` suffix selects the protocol without separate Base URL, path, or protocol fields.
 - Temperature is absent from the UI and every request. Provider defaults avoid invalid parameters as model sampling contracts evolve.
 - Reasoning has two choices. Default sends no control. Disable maps to the lowest verified model-specific setting; models without a verified mapping receive no control.
-- Editable System Prompt and User Prompt defaults preserve their distinct roles: the system prompt defines purpose, while the user prompt shapes each input within that purpose. Both support `$text`, `$sourceLang`, and `$targetLang`.
-- The default system prompt starts with the translation role and explicitly prevents instruction-like source text from becoming a command. The raw source remains a separate user message.
+- Built-in actions use fixed task profiles and prompts. Transform actions keep the raw runtime text in the user message and explicitly treat it as data; Ask treats it as the user's real question.
+- Runtime parsing accepts `additionalRequirements` plus one optional Custom alias, instruction, and user template. Custom system instructions can use language variables but cannot interpolate `$text`; the user template must contain `$text`.
 - Menu values are case-insensitively sorted by `value`; the `custom` model entry is the only fixed first item.
+
+The M2 branch is intentionally not release-ready by itself: `public/info.json`
+still exposes the legacy prompt fields while the runtime accepts the new action
+settings. M3 owns the compact Bob form and M4 owns manuals, migration guidance,
+identity, packaging, and installed-host validation. No intermediate package
+should be presented as a completed Pop release.
 
 ## Provider contracts
 
@@ -117,7 +127,7 @@ The metadata test fails if the menu and runtime catalog differ.
 
 ## Performance
 
-`bun run benchmark` rebuilds the bundle, then reports absolute timings for capability resolution, adapter construction, request construction, and SSE parsing together with the current `dist/main.js` size. Each timing is the median of nine samples with 100,000 local operations.
+`bun run benchmark` rebuilds the bundle, then reports absolute timings for action resolution and prompt construction, capability resolution, adapter construction, request construction, and SSE parsing together with the current `dist/main.js` size. Each timing is the median of nine samples with 100,000 local operations.
 
 The benchmark excludes network latency. Compare results only when the machine, Bun version, workload, and sampling method are the same; the repository does not claim a cross-version improvement without a freshly reproduced baseline.
 

@@ -1,12 +1,11 @@
 import type {
   HttpResponse,
   ServiceError,
-  TextTranslateQuery,
   ValidationCompletion,
 } from '@bob-translate/types';
 import { PROVIDERS } from '../config';
+import type { PromptPair } from '../types';
 import { resolveModelControls } from '../utils/model-capabilities';
-import { createPrompts } from '../utils/prompt';
 import { BaseAdapter } from './base';
 
 export class GeminiAdapter extends BaseAdapter {
@@ -60,8 +59,7 @@ export class GeminiAdapter extends BaseAdapter {
     };
   }
 
-  public buildRequestBody(query: TextTranslateQuery): Record<string, unknown> {
-    const prompts = createPrompts(query, this.config);
+  public buildRequestBody(prompts: PromptPair): Record<string, unknown> {
     const controls = resolveModelControls(
       this.config.provider,
       this.config.model,

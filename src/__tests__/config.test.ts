@@ -24,6 +24,12 @@ describe('parseOptions', () => {
     expect(config.apiKeys).toEqual(['key-one', 'key-two']);
     expect(config.reasoningMode).toBe('default');
     expect(config.stream).toBe(true);
+    expect(config).toMatchObject({
+      additionalRequirements: '',
+      customActionCommand: '',
+      customActionInstruction: '',
+      customActionUserTemplate: '$text',
+    });
     expect(Object.isFrozen(config)).toBe(true);
     expect(Object.isFrozen(config.apiKeys)).toBe(true);
   });
@@ -139,5 +145,51 @@ describe('parseOptions', () => {
     );
     expect(custom.model).toBe('gemini-experimental');
     expect(custom.provider).toBe('gemini');
+  });
+
+  it('parses one optional Custom action without requiring it', () => {
+    const customAction = parseOptions(
+      options({
+        additionalRequirements: 'Keep API names in English.',
+        customActionCommand: ' /s ',
+        customActionInstruction:
+          'Summarize from $sourceLang for $targetLang readers.',
+        customActionUserTemplate: 'Source:\n$text',
+      }),
+    );
+
+    expect(customAction).toMatchObject({
+      additionalRequirements: 'Keep API names in English.',
+      customActionCommand: '/s',
+      customActionInstruction:
+        'Summarize from $sourceLang for $targetLang readers.',
+      customActionUserTemplate: 'Source:\n$text',
+    });
+  });
+
+  it('rejects unsafe or ambiguous Custom configuration', () => {
+    for (const customActionCommand of ['/ask', '/Q', 'summary', '/two words']) {
+      expect(() => parseOptions(options({ customActionCommand }))).toThrow();
+    }
+    expect(() =>
+      parseOptions(
+        options({ customActionInstruction: 'Summarize $text now.' }),
+      ),
+    ).toThrow();
+    expect(() =>
+      parseOptions(options({ customActionUserTemplate: 'No text variable' })),
+    ).toThrow();
+  });
+
+  it('ignores legacy prompt fields without requiring them', () => {
+    const withoutLegacyPrompts = parseOptions(options());
+    const withLegacyPrompts = parseOptions(
+      options({
+        customSystemPrompt: 'Old system prompt',
+        customUserPrompt: 'Old user prompt: $text',
+      }),
+    );
+
+    expect(withLegacyPrompts).toEqual(withoutLegacyPrompts);
   });
 });
