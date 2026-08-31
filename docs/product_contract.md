@@ -234,7 +234,7 @@ M1 已没有阻塞 M2 的未决产品选择。多个自定义 action、AI intent
 
 ## M2 本地实现状态
 
-2026-08-31，W-14、W-13 和 W-16 已在 Milestone 2 分支实现：
+2026-08-31，W-14、W-13 和 W-16 已由提交 `9fa3f42` 在 Milestone 2 分支实现：
 
 * `src/action/command.ts` 覆盖冻结的命令、alias、转义和错误语义
 * `src/action/profiles.ts` 与 `src/action/resolve.ts` 固化六种 action 和默认路由

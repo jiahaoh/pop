@@ -1,7 +1,7 @@
 # Architecture
 
-Implementation last verified: 2026-08-31 on the Milestone 2 branch. External
-documentation and comparable-project sources were last verified on 2026-07-23.
+Implementation last verified: 2026-08-31 at `9fa3f42`. External documentation
+and comparable-project sources were last verified on 2026-07-23.
 
 Start with the [maintainer orientation](./maintainer_orientation.md) for a
 code-reading path and full request lifecycle. Use the
