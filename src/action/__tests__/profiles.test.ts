@@ -26,9 +26,9 @@ describe('TaskProfile registry', () => {
     }
     expect(TASK_PROFILES).toMatchObject({
       ask: { recommendedReasoning: 'standard' },
-      custom: { recommendedReasoning: 'default' },
-      grammar: { recommendedReasoning: 'fast' },
-      polish: { recommendedReasoning: 'fast' },
+      custom: { recommendedReasoning: 'standard' },
+      grammar: { recommendedReasoning: 'standard' },
+      polish: { recommendedReasoning: 'standard' },
       translate: { recommendedReasoning: 'fast' },
       wording: { recommendedReasoning: 'standard' },
     });

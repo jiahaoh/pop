@@ -240,9 +240,9 @@ M3 保留 `reasoningMode` 作为保存键，并向用户提供五个档位：
 | `standard` | 使用已验证的均衡档 |
 | `deep` | 使用已验证的高档 |
 
-Auto 为 Translate、Polish 和 Grammar 推荐 Fast，为 Ask 和 Wording 推荐
-Standard，为 Custom 推荐模型默认。显式设置始终覆盖推荐值。旧保存值
-`disable` 解析为 Fast，`default` 继续保持省略 reasoning 参数的语义。
+Auto 为 Translate 推荐 Fast，为 Ask、Custom、Grammar、Polish 和 Wording
+推荐 Standard。显式设置始终覆盖推荐值。旧保存值 `disable` 解析为 Fast，
+`default` 继续保持省略 reasoning 参数的语义。
 
 Provider 映射只匹配精确 model ID。未知、带命名空间或其他自定义 model ID
 不获得可选 reasoning 字段；即使自定义 ID 看起来像某个已知 provider model，

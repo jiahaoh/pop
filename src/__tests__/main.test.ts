@@ -73,19 +73,19 @@ describe('Bob entry action orchestration', () => {
       {
         input: '/s Long text',
         instruction: 'Execute the user-configured text task below',
-        reasoningEffort: undefined,
+        reasoningEffort: 'medium',
         user: 'Text:\nLong text',
       },
       {
         input: '/g This are wrong.',
         instruction: 'Correct grammar, spelling, and usage',
-        reasoningEffort: 'none',
+        reasoningEffort: 'medium',
         user: 'This are wrong.',
       },
       {
         input: '/p Hello',
         instruction: 'Polish the user message',
-        reasoningEffort: 'none',
+        reasoningEffort: 'medium',
         user: 'Hello',
       },
       {

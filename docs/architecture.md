@@ -83,10 +83,9 @@ Provider dispatch is an exhaustive TypeScript switch. A new wire provider requir
 construction. `resolveModelControls(provider, model, profile)` is the only
 runtime capability resolver and cannot accept the unresolved Auto value.
 
-Model default always omits the provider control. Auto recommendations are Fast
-for Translate, Polish, and Grammar; Standard for Ask and Wording; and Model
-default for Custom, whose complexity is user-defined. An explicit user choice
-overrides the recommendation.
+Model default always omits the provider control. Auto recommends Fast for
+Translate and Standard for Ask, Custom, Grammar, Polish, and Wording. An
+explicit user choice overrides the recommendation.
 
 Only exact model IDs with a current provider contract receive a control:
 

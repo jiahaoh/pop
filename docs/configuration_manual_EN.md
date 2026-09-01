@@ -89,7 +89,7 @@ Do not use a `/models` response as proof of compatibility. Verify the actual mod
 
 ## Reasoning
 
-The default is Auto. Translate, Polish, and Grammar use the latency-oriented Fast profile; Ask and Wording use the balanced Standard profile; Custom uses the model default because the user defines its complexity.
+The default is Auto. Translate uses the latency-oriented Fast profile; Ask, Custom, Grammar, Polish, and Wording use the balanced Standard profile.
 
 | Setting | Behavior |
 | --- | --- |

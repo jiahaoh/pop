@@ -89,7 +89,7 @@ API URL 可留空；留空时使用模型对应的官方地址。第三方服务
 
 ## 推理
 
-默认选择「自动（按任务）」。Translate、Polish、Grammar 使用延迟优先的快速档；Ask 和 Wording 使用平衡的标准档；复杂度由用户定义的 Custom 使用模型默认。
+默认选择「自动（按任务）」。Translate 使用延迟优先的快速档；Ask、Custom、Grammar、Polish 和 Wording 使用平衡的标准档。
 
 | 选项 | 行为 |
 | --- | --- |
