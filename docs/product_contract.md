@@ -47,7 +47,7 @@ detectFrom != detectTo  -> Translate
 detectFrom == detectTo  -> Polish
 ```
 
-Bob 语言上下文只负责在没有命令时选择 Translate 或 Polish。进入 Translate 后，简体中文、繁体中文、粤语和古文输入译为英文，其他输入译为简体中文。
+Bob 语言上下文只负责在没有命令时选择 Translate 或 Polish。进入 Translate 后，方向由移除命令后的正文语言决定，不使用 Bob 语言元数据：中文正文译为英文，其他正文译为简体中文。
 
 默认路由保留现有翻译/同语言润色的 action 选择习惯，但不保证旧自定义 prompt 在新产品中自动迁移。旧设置的处理见“发布身份与兼容策略”。
 

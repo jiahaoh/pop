@@ -31,7 +31,7 @@ source language != target language  -> Translate
 source language == target language  -> Polish
 ```
 
-Once Translate is selected, Pop derives the default direction from the detected input language: Simplified Chinese, Traditional Chinese, Cantonese, and Classical Chinese go to English; every other language goes to Simplified Chinese.
+Once Translate is selected, Pop derives the default direction from the body after removing the command, not from Bob language metadata: Chinese goes to English, and every other language goes to Simplified Chinese.
 
 Command matching is ASCII case-insensitive and requires a complete token. An unknown `/name`, an empty command body, or invalid Custom configuration returns an error before any network request. Start with `//` to escape the first slash as ordinary text: `//ask` follows default routing with the literal body `/ask`.
 

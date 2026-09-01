@@ -91,26 +91,6 @@ describe('default task resolver', () => {
     });
   });
 
-  it('uses the Chinese-English default direction for Translate', () => {
-    expect(
-      resolveTask(query('fr', 'en'), {
-        action: 'translate',
-        explicit: true,
-        text: 'Bonjour',
-      }),
-    ).toMatchObject({ sourceLanguage: 'fr', targetLanguage: 'zh-CN' });
-
-    for (const sourceLanguage of ['zh-Hans', 'zh-Hant', 'yue', 'wyw']) {
-      expect(
-        resolveTask(query(sourceLanguage, 'zh-Hans'), {
-          action: 'translate',
-          explicit: true,
-          text: '你好',
-        }),
-      ).toMatchObject({ targetLanguage: 'en' });
-    }
-  });
-
   it('uses Polish when Bob source and target match', () => {
     expect(
       resolveTask(query('en', 'en'), {

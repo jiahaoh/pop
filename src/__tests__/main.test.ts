@@ -90,7 +90,8 @@ describe('Bob entry action orchestration', () => {
       },
       {
         input: '/t Hello',
-        instruction: 'Translate the user message from en to zh-CN',
+        instruction:
+          'if it is Chinese, translate it to English; otherwise, translate it to Simplified Chinese',
         reasoningEffort: 'none',
         user: 'Hello',
       },
@@ -118,6 +119,17 @@ describe('Bob entry action orchestration', () => {
       );
     }
     expect(request).toHaveBeenCalledTimes(cases.length);
+  });
+
+  it('does not let command-polluted Bob metadata reverse Chinese translation', async () => {
+    await runTranslation('/t 中国的首都是北京', 'en', 'zh-Hans');
+
+    expect(request.mock.calls[0][0].body).toMatchObject({
+      instructions: expect.stringContaining(
+        'if it is Chinese, translate it to English; otherwise, translate it to Simplified Chinese',
+      ),
+      input: '中国的首都是北京',
+    });
   });
 
   it('uses Bob language context for deterministic commandless routing', async () => {
