@@ -17,6 +17,15 @@ type MenuOption = {
   };
 };
 
+type AppcastRelease = {
+  desc: string;
+  minBobVersion: string;
+  sha256: string;
+  timestamp: number;
+  url: string;
+  version: string;
+};
+
 const options = info.options as MenuOption[];
 const getOption = (identifier: string): MenuOption => {
   const option = options.find((item) => item.identifier === identifier);
@@ -40,7 +49,22 @@ describe('info.json consistency', () => {
       name: 'Pop',
       version: '0.1.0',
     });
-    expect(appcast).toEqual({ identifier: 'jiahaoh.pop', versions: [] });
+    expect(appcast.identifier).toBe('jiahaoh.pop');
+    const releases = appcast.versions as AppcastRelease[];
+    expect(releases.length).toBeGreaterThan(0);
+    expect(new Set(releases.map(({ version }) => version)).size).toBe(
+      releases.length,
+    );
+    for (const release of releases) {
+      expect(release.version).toMatch(/^\d+\.\d+\.\d+$/);
+      expect(release.desc.trim().length).toBeGreaterThan(0);
+      expect(release.sha256).toMatch(/^[a-f\d]{64}$/);
+      expect(release.url).toBe(
+        `https://github.com/jiahaoh/pop/releases/download/v${release.version}/pop-${release.version}.bobplugin`,
+      );
+      expect(release.minBobVersion).toBe(info.minBobVersion);
+      expect(Number.isSafeInteger(release.timestamp)).toBe(true);
+    }
     expect(JSON.stringify({ appcast, info, packageMetadata })).not.toContain(
       'yetone.openai.translator',
     );
