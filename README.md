@@ -36,6 +36,8 @@ Pop 是面向选中文本和单次输入的 one-shot AI action 工具。它在 [
 
 Pop 使用独立 identifier，可以与 OpenAI Translator 并存，但不会自动读取旧插件设置。一次性手工处理方法见[从 OpenAI Translator 迁移](./docs/configuration_manual_CN.md#从-openai-translator-迁移)。
 
+处理敏感内容前，请先了解 [Bob 本地宿主日志边界](./docs/configuration_manual_CN.md#隐私与本地日志)。
+
 ## 开发与贡献
 
 开发环境、验证命令和提交要求见[贡献指南](./.github/contributing.md)。运行时设计和外部依据见[架构说明](./docs/architecture.md)。静态测试和 archive 检查不能证明 Bob 已安装或执行插件；运行时改动还必须完成 [Bob 实机 smoke test](./docs/bob_smoke_test.md)。

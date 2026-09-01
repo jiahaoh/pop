@@ -139,7 +139,19 @@ The metadata test fails if the menu and runtime catalog differ.
 - SSE buffering is limited to 1 MiB.
 - Non-streaming output is returned as one paragraph so Bob preserves model formatting and blank lines.
 - Validation completes on every success, error, and unexpected-response path.
-- API keys and authorization headers are never logged.
+- Pop runtime code contains no logging calls and never deliberately logs API
+  keys, authorization headers, request bodies, or source text.
+
+## Host logging boundary
+
+Installed-host validation on 2026-08-31 with Bob 1.20.0 (255) on macOS 26.6.2
+found that Bob's local MMKit host log records translation source text even
+though Pop does not call `$log` or another logging API. A strict scan of the
+observed log found no API-key-like token or `Authorization`/`api-key` header.
+Because Pop cannot control Bob's host diagnostics, local and exported Bob logs
+must be treated as sensitive and redacted before sharing. This accepted host
+boundary is user-facing in both configuration manuals and remains an explicit
+smoke-test observation rather than a claim that Pop can redact Bob-owned logs.
 
 `eventsource-parser` remains bundled because it correctly handles arbitrary chunk boundaries and multiline SSE without relying on browser APIs.
 

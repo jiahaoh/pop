@@ -36,6 +36,8 @@ The common path needs only an API key, a [model](./configuration_manual_EN.md#mo
 
 Pop has an independent identifier and can coexist with OpenAI Translator, but it does not read settings from that plugin. Follow [Migrate from OpenAI Translator](./configuration_manual_EN.md#migrate-from-openai-translator) once to re-enter or copy the applicable values.
 
+Before processing sensitive content, review the [Bob local host-log boundary](./configuration_manual_EN.md#privacy-and-local-logs).
+
 ## Development and contributions
 
 See the [contribution guide](../.github/contributing.md) for the development environment, validation commands, and submission requirements. Runtime decisions and source references are in the [architecture notes](./architecture.md). Static tests and archive inspection do not prove that Bob installed or executed a package; runtime changes also require the [Bob host smoke test](./bob_smoke_test.md).

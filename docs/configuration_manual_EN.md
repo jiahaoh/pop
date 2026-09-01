@@ -41,6 +41,14 @@ Separate multiple keys with commas to select one randomly for each request.
 
 A key is sent only to the resolved API URL. Pop does not log keys or request headers.
 
+## Privacy and local logs
+
+The source text is sent to the resolved API URL so the selected model can run the action. Pop's runtime code does not call Bob's logging API and does not deliberately write API keys, authentication headers, request bodies, or source text to logs.
+
+However, installed-host validation on 2026-08-31 with macOS 26.6.2 and Bob 1.20.0 (255) found that Bob's local MMKit host log records translation source text even when the plugin makes no logging call. This is Bob host behavior outside Pop's control. The inspected log contained no API key, `Authorization` header, or `api-key` header.
+
+Treat Bob's local and exported diagnostic logs as sensitive data. Inspect and remove source text, credentials, and authentication headers before sharing them. A secure settings field does not guarantee source-text redaction from host logs.
+
 ## Model
 
 The default model is `gpt-5.6-luna`. Built-in models are:

@@ -77,11 +77,31 @@ describe('documentation consistency', () => {
     expect(chinese).toContain(
       'configuration_manual_CN.md#从-openai-translator-迁移',
     );
+    expect(chinese).toContain('configuration_manual_CN.md#隐私与本地日志');
     expect(english).toContain(
       'configuration_manual_EN.md#commands-and-default-routing',
     );
     expect(english).toContain(
       'configuration_manual_EN.md#migrate-from-openai-translator',
     );
+    expect(english).toContain(
+      'configuration_manual_EN.md#privacy-and-local-logs',
+    );
+  });
+
+  it('documents the Bob-owned host log boundary in both manuals', async () => {
+    const [chinese, english] = await Promise.all([
+      read('docs/configuration_manual_CN.md'),
+      read('docs/configuration_manual_EN.md'),
+    ]);
+
+    for (const manual of [chinese, english]) {
+      expect(manual).toContain('Bob 1.20.0 (255)');
+      expect(manual).toContain('MMKit');
+      expect(manual).toContain('Authorization');
+      expect(manual).toContain('api-key');
+    }
+    expect(chinese).toContain('输入原文');
+    expect(english).toContain('source text');
   });
 });

@@ -190,8 +190,14 @@ API key or full wire payload.
 - Prerequisite: Bob logging/export is available and an intentional failure has
   been produced.
 - Action: inspect the relevant Bob logs and exported diagnostic data.
-- Expected: no API key, `Authorization`/`api-key` header, or request body/source
-  text is present. Diagnostic messages remain attributable to this plugin.
+- Expected: no API key or `Authorization`/`api-key` header is present. Separate
+  Pop-attributable diagnostics from Bob-owned host diagnostics, record whether
+  the host captured source text, and treat every local or exported log as
+  sensitive before sharing.
+- M4 observation: Bob 1.20.0 (255) on macOS 26.6.2 recorded the test inputs in
+  its local MMKit host log. Pop source contains no logging calls, and the
+  inspected log contained no secret-like token or authentication header. The
+  maintainer accepted this documented Bob host boundary for release.
 
 ## Evidence boundary
 
@@ -219,6 +225,7 @@ API key or full wire payload.
 | R8 | Multiple comma-separated API keys are selected randomly, including during validation | One bad key can make validation intermittent | Keep keys individually valid or add deterministic diagnostics in a future scoped change |
 | R9 | Provider model and reasoning contracts can drift after repository documentation is verified | Valid request bodies can become stale | M3 sources were refreshed on 2026-08-31; recheck again during M4 release validation |
 | R10 | Direct live tests use Bun/browser-style APIs, not Bob `$http` | A provider probe can pass while the plugin fails in Bob | Treat live tests as supplemental; complete T1–T3 in Bob |
+| R11 | Bob 1.20.0 local MMKit logs captured source text independently of Pop | Sensitive inputs can remain in local or exported host diagnostics | Treat Bob logs as sensitive, redact before sharing, and recheck supported Bob releases |
 
 ## Historical M0 handoff to M1
 
