@@ -64,18 +64,34 @@ describe('Bob entry action orchestration', () => {
 
   it('constructs provider requests for all six actions under a mock provider', async () => {
     const cases = [
-      { input: '/ask Why?', action: 'Ask', user: 'Why?' },
-      { input: '/s Long text', action: 'Custom', user: 'Text:\nLong text' },
+      {
+        input: '/ask Why?',
+        instruction: 'Answer the question in the user message directly',
+        user: 'Why?',
+      },
+      {
+        input: '/s Long text',
+        instruction: 'Execute the user-configured text task below',
+        user: 'Text:\nLong text',
+      },
       {
         input: '/g This are wrong.',
-        action: 'Grammar',
+        instruction: 'Correct grammar, spelling, and usage',
         user: 'This are wrong.',
       },
-      { input: '/p Hello', action: 'Polish', user: 'Hello' },
-      { input: '/t Hello', action: 'Translate', user: 'Hello' },
+      {
+        input: '/p Hello',
+        instruction: 'Polish the user message',
+        user: 'Hello',
+      },
+      {
+        input: '/t Hello',
+        instruction: 'Translate the user message from en to zh-CN',
+        user: 'Hello',
+      },
       {
         input: '/w Deadline extension',
-        action: 'Wording',
+        instruction: 'Provide better wording for the request',
         user: 'Deadline extension',
       },
     ];
@@ -89,7 +105,7 @@ describe('Bob entry action orchestration', () => {
         string,
         unknown
       >;
-      expect(body.instructions).toContain(`Pop's ${testCase.action} action`);
+      expect(body.instructions).toContain(testCase.instruction);
       expect(body.input).toBe(testCase.user);
     }
     expect(request).toHaveBeenCalledTimes(cases.length);
@@ -98,13 +114,13 @@ describe('Bob entry action orchestration', () => {
   it('uses Bob language context for deterministic commandless routing', async () => {
     await runTranslation('Hello', 'en', 'zh-Hans');
     expect(request.mock.calls[0][0].body).toMatchObject({
-      instructions: expect.stringContaining("Pop's Translate action"),
+      instructions: expect.stringContaining('Translate the user message'),
       input: 'Hello',
     });
 
     await runTranslation('Hello', 'en', 'en');
     expect(request.mock.calls[1][0].body).toMatchObject({
-      instructions: expect.stringContaining("Pop's Polish action"),
+      instructions: expect.stringContaining('Polish the user message'),
       input: 'Hello',
     });
   });
@@ -126,7 +142,7 @@ describe('Bob entry action orchestration', () => {
     await runTranslation('//ask');
 
     expect(request.mock.calls[0][0].body).toMatchObject({
-      instructions: expect.stringContaining("Pop's Translate action"),
+      instructions: expect.stringContaining('Translate the user message'),
       input: '/ask',
     });
   });
