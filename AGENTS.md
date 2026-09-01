@@ -54,3 +54,7 @@ Static checks cannot prove behavior inside Bob. Runtime changes need a packaged-
 The current Bob release ignores plugin packages whose version is not newer than the installed copy. Keep the repository version unchanged during development, and require the generated archive version to be proven newer than the installed release but older than the next stable release. Verify the copied metadata after opening the package because installation completes asynchronously.
 
 Live-provider probes are opt-in and use only credentials explicitly supplied for that run. Never discover credentials from local files or credential stores.
+
+## Local Development
+
+- For this local fork, Linear App is the primary product management tool.
