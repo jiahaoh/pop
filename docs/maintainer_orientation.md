@@ -1,6 +1,6 @@
 # Maintainer orientation
 
-Implementation verified: 2026-08-31 at `9fa3f42`.
+Implementation verified: 2026-08-31 at `a4c0b75`.
 
 This guide is the shortest path from an unfamiliar checkout to a working model
 of the plugin. Read [architecture.md](./architecture.md) for design rationale and

@@ -1,6 +1,6 @@
 # Architecture
 
-Implementation last verified: 2026-08-31 at `9fa3f42`. External documentation
+Implementation last verified: 2026-08-31 at `a4c0b75`. External documentation
 and comparable-project sources were last verified on 2026-07-23.
 
 Start with the [maintainer orientation](./maintainer_orientation.md) for a
