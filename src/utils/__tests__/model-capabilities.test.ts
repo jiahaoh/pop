@@ -67,6 +67,15 @@ describe('resolveModelControls', () => {
         },
       },
       {
+        id: 'gpt-5.6-terra',
+        provider: 'openai',
+        controls: {
+          fast: { openAiReasoningEffort: 'none' },
+          standard: { openAiReasoningEffort: 'medium' },
+          deep: { openAiReasoningEffort: 'high' },
+        },
+      },
+      {
         id: 'MiniMax-M2.7-highspeed',
         provider: 'minimax',
         controls: { fast: {}, standard: {}, deep: {} },
@@ -102,6 +111,17 @@ describe('resolveModelControls', () => {
       openAiReasoningEffort: 'medium',
     });
     expect(resolveModelControls('openai', 'gpt-5.6-luna', 'deep')).toEqual({
+      openAiReasoningEffort: 'high',
+    });
+    expect(resolveModelControls('openai', 'gpt-5.6-terra', 'fast')).toEqual({
+      openAiReasoningEffort: 'none',
+    });
+    expect(resolveModelControls('openai', 'gpt-5.6-terra', 'standard')).toEqual(
+      {
+        openAiReasoningEffort: 'medium',
+      },
+    );
+    expect(resolveModelControls('openai', 'gpt-5.6-terra', 'deep')).toEqual({
       openAiReasoningEffort: 'high',
     });
     expect(resolveModelControls('openai', 'gpt-5.4-mini', 'fast')).toEqual({

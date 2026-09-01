@@ -59,6 +59,7 @@ The default model is `gpt-5.6-luna`. Built-in models are:
 - `gemini-3.6-flash`
 - `gpt-5.4-mini`
 - `gpt-5.6-luna`
+- `gpt-5.6-terra`
 - `MiniMax-M2.7-highspeed`
 - `MiniMax-M3`
 

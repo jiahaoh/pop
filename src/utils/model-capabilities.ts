@@ -20,6 +20,10 @@ export const MODEL_CATALOG = Object.freeze([
     provider: 'openai',
   },
   {
+    id: 'gpt-5.6-terra',
+    provider: 'openai',
+  },
+  {
     id: 'MiniMax-M2.7-highspeed',
     provider: 'minimax',
   },

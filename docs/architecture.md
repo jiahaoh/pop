@@ -231,6 +231,7 @@ The linked [Bob 1.8 plugin changes](https://bobtranslate.com/blog/2023-05-18-180
 - [MiniMax-M3 model card](https://huggingface.co/MiniMaxAI/MiniMax-M3)
 - [OpenAI GPT-5.4 Mini](https://developers.openai.com/api/docs/models/gpt-5.4-mini)
 - [OpenAI GPT-5.6 Luna](https://developers.openai.com/api/docs/models/gpt-5.6-luna)
+- [OpenAI GPT-5.6 Terra](https://developers.openai.com/api/docs/models/gpt-5.6-terra)
 - [OpenAI model guidance](https://developers.openai.com/api/docs/guides/latest-model)
 - [OpenAI prompt engineering](https://developers.openai.com/api/docs/guides/prompt-engineering)
 - [OpenAI reasoning](https://developers.openai.com/api/docs/guides/reasoning)

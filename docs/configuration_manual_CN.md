@@ -59,6 +59,7 @@ Key 只会发送到最终使用的 API URL。Pop 不记录 Key 或请求头。
 - `gemini-3.6-flash`
 - `gpt-5.4-mini`
 - `gpt-5.6-luna`
+- `gpt-5.6-terra`
 - `MiniMax-M2.7-highspeed`
 - `MiniMax-M3`
 

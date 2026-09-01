@@ -35,6 +35,17 @@ describe('parseOptions', () => {
   });
 
   it('infers official providers from the selected model', () => {
+    const openai = parseOptions(
+      options({
+        model: 'gpt-5.6-terra',
+      }),
+    );
+    expect(openai).toMatchObject({
+      endpoint: 'https://api.openai.com/v1/responses',
+      protocol: 'openai-responses',
+      provider: 'openai',
+    });
+
     const gemini = parseOptions(
       options({
         model: 'gemini-3.6-flash',
