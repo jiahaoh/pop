@@ -10,7 +10,7 @@ const options = (
   customSystemPrompt: '',
   customUserPrompt: '',
   model: 'gpt-5.6-luna',
-  reasoningMode: 'default',
+  reasoningMode: 'auto',
   stream: 'enable',
   ...overrides,
 });
@@ -22,7 +22,7 @@ describe('parseOptions', () => {
     expect(config.provider).toBe('openai');
     expect(config.protocol).toBe('openai-responses');
     expect(config.apiKeys).toEqual(['key-one', 'key-two']);
-    expect(config.reasoningMode).toBe('default');
+    expect(config.reasoningMode).toBe('auto');
     expect(config.stream).toBe(true);
     expect(config).toMatchObject({
       additionalRequirements: '',
@@ -122,10 +122,26 @@ describe('parseOptions', () => {
       parseOptions(options({ apiUrl: 'https://example.com/v1' })),
     ).toThrow();
     expect(() => parseOptions(options({ reasoningMode: 'minimal' }))).toThrow();
-    expect(() => parseOptions(options({ reasoningMode: 'auto' }))).toThrow();
     expect(() => parseOptions(options({ reasoningMode: 'enable' }))).toThrow();
     expect(() => parseOptions(options({ stream: 'sometimes' }))).toThrow();
     expect(() => parseOptions(options({ apiKeys: ' , ' }))).toThrow();
+  });
+
+  it('parses five reasoning modes and migrates the legacy disabled value', () => {
+    for (const reasoningMode of [
+      'auto',
+      'deep',
+      'default',
+      'fast',
+      'standard',
+    ] as const) {
+      expect(parseOptions(options({ reasoningMode })).reasoningMode).toBe(
+        reasoningMode,
+      );
+    }
+    expect(
+      parseOptions(options({ reasoningMode: 'disable' })).reasoningMode,
+    ).toBe('fast');
   });
 
   it('requires the custom model value and infers known prefixes', () => {

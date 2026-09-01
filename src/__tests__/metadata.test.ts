@@ -2,7 +2,6 @@ import { describe, expect, it } from 'bun:test';
 import packageMetadata from '../../package.json';
 import info from '../../public/info.json';
 import { DEFAULT_MODEL, MODEL_CATALOG } from '../utils/model-capabilities';
-import { DEFAULT_SYSTEM_PROMPT, DEFAULT_USER_PROMPT } from '../utils/prompt';
 
 type MenuOption = {
   defaultValue?: string;
@@ -34,7 +33,12 @@ describe('info.json consistency', () => {
     for (const option of options) {
       if (!option.menuValues) continue;
       const values = option.menuValues.map((item) => item.value);
-      const sortable = option.identifier === 'model' ? values.slice(1) : values;
+      const sortable =
+        option.identifier === 'model'
+          ? values.slice(1)
+          : option.identifier === 'reasoningMode'
+            ? []
+            : values;
       expect(sortable).toEqual(
         [...sortable].sort((left, right) =>
           left.localeCompare(right, 'en', { sensitivity: 'base' }),
@@ -46,29 +50,41 @@ describe('info.json consistency', () => {
 
   it('defaults to the API-key-only path', () => {
     const identifiers = options.map((option) => option.identifier);
-    expect(identifiers[0]).toBe('apiKeys');
-    expect(identifiers[1]).toBe('apiUrl');
+    expect(identifiers).toEqual([
+      'apiKeys',
+      'model',
+      'customModel',
+      'apiUrl',
+      'reasoningMode',
+      'stream',
+      'additionalRequirements',
+      'customActionCommand',
+      'customActionInstruction',
+      'customActionUserTemplate',
+    ]);
     expect(identifiers).not.toContain('serviceProvider');
     expect(identifiers).not.toContain('apiPath');
     expect(identifiers).not.toContain('endpoint');
     expect(identifiers).not.toContain('temperature');
     expect(identifiers).toContain('apiUrl');
-    expect(identifiers).toContain('customSystemPrompt');
-    expect(identifiers).toContain('customUserPrompt');
+    expect(identifiers).not.toContain('customSystemPrompt');
+    expect(identifiers).not.toContain('customUserPrompt');
+    expect(identifiers).toContain('additionalRequirements');
+    expect(identifiers).toContain('customActionCommand');
+    expect(identifiers).toContain('customActionInstruction');
+    expect(identifiers).toContain('customActionUserTemplate');
     expect(identifiers).toContain('reasoningMode');
     expect(getOption('model').defaultValue).toBe(DEFAULT_MODEL);
-    expect(getOption('reasoningMode').defaultValue).toBe('default');
+    expect(getOption('reasoningMode').defaultValue).toBe('auto');
     expect(getOption('reasoningMode').menuValues).toEqual([
-      { title: '默认', value: 'default' },
-      { title: '关闭', value: 'disable' },
+      { title: '自动（按任务）', value: 'auto' },
+      { title: '模型默认', value: 'default' },
+      { title: '快速', value: 'fast' },
+      { title: '标准', value: 'standard' },
+      { title: '深入', value: 'deep' },
     ]);
     expect(getOption('stream').defaultValue).toBe('enable');
-    expect(getOption('customSystemPrompt').defaultValue).toBe(
-      DEFAULT_SYSTEM_PROMPT,
-    );
-    expect(getOption('customUserPrompt').defaultValue).toBe(
-      DEFAULT_USER_PROMPT,
-    );
+    expect(getOption('customActionUserTemplate').defaultValue).toBe('$text');
     expect(info.version).toMatch(/^\d+\.\d+\.\d+$/);
     expect(packageMetadata.version).toBe(info.version);
   });
@@ -86,7 +102,8 @@ describe('info.json consistency', () => {
 
   it('keeps the configuration UI Chinese-first', () => {
     expect(JSON.stringify(info)).toContain('默认');
-    expect(JSON.stringify(info)).toContain('系统指令');
+    expect(JSON.stringify(info)).toContain('额外要求');
+    expect(JSON.stringify(info)).toContain('Custom 指令');
   });
 
   it('uses the clickable homepage for documentation', () => {
@@ -102,18 +119,14 @@ describe('info.json consistency', () => {
     }
   });
 
-  it('keeps prompt defaults, placeholders, and highlighted variables', () => {
-    for (const identifier of ['customSystemPrompt', 'customUserPrompt']) {
-      const option = getOption(identifier);
-      expect(option.defaultValue).toBeString();
-      expect(option.textConfig?.placeholderText).toBe(
-        option.defaultValue ?? '',
-      );
-      expect(option.textConfig?.keyWords).toEqual([
-        '$text',
-        '$sourceLang',
-        '$targetLang',
-      ]);
-    }
+  it('keeps Custom instruction and runtime text variables separated', () => {
+    expect(getOption('customActionInstruction').textConfig?.keyWords).toEqual([
+      '$sourceLang',
+      '$targetLang',
+    ]);
+    expect(getOption('customActionUserTemplate').textConfig).toMatchObject({
+      keyWords: ['$text', '$sourceLang', '$targetLang'],
+      placeholderText: '$text',
+    });
   });
 });

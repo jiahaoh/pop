@@ -228,6 +228,30 @@ M2 可以在 `TaskProfile` 中记录推荐 reasoning profile，但不会扩展�
 
 静态与 mock 测试不能证明 Bob JavaScriptCore、设置渲染、保存值、安装更新或真实 provider 行为。M2 完成只证明 action engine 和 provider request construction；打包后的六种 action、Custom alias、流式和非流式实机 smoke test 仍属于 M4。
 
+## M3 模型控制契约
+
+M3 保留 `reasoningMode` 作为保存键，并向用户提供五个档位：
+
+| 值 | 产品含义 |
+| --- | --- |
+| `auto` | 解析当前 action 的 provider-neutral 推荐档位 |
+| `default` | 省略 provider reasoning 控制 |
+| `fast` | 使用已验证的最低档或关闭推理 |
+| `standard` | 使用已验证的均衡档 |
+| `deep` | 使用已验证的高档 |
+
+Auto 为 Translate、Polish 和 Grammar 推荐 Fast，为 Ask 和 Wording 推荐
+Standard，为 Custom 推荐模型默认。显式设置始终覆盖推荐值。旧保存值
+`disable` 解析为 Fast，`default` 继续保持省略 reasoning 参数的语义。
+
+Provider 映射只匹配精确 model ID。未知、带命名空间或其他自定义 model ID
+不获得可选 reasoning 字段；即使自定义 ID 看起来像某个已知 provider model，
+也适用这一保守规则。
+
+紧凑的 Bob 表单提供 API Key、模型、自定义模型、可选完整 API URL、推理、流式、
+共用额外要求以及一个 Custom action。旧 System/User Prompt 字段从表单移除，
+runtime 解析也忽略它们；Pop 使用独立 identifier，因此跨插件迁移仍为手动操作。
+
 ## M1 完成状态
 
 M1 已没有阻塞 M2 的未决产品选择。多个自定义 action、AI intent classification、多轮对话、动态 prompt 下载、Temperature、工具调用、联网搜索和附件均不属于当前 MVP。
@@ -244,4 +268,6 @@ M1 已没有阻塞 M2 的未决产品选择。多个自定义 action、AI intent
 
 这些证据只覆盖纯函数、mock provider、request body、transport regression、bundle export 和禁止 API 检查。它们不证明 Bob JavaScriptCore 实际执行、设置表单渲染/保存、安装更新顺序或真实 provider 行为。
 
-M2 分支仍是非发布中间态：新的 action settings 已由 `parseOptions()` 接受，但 `public/info.json` 的紧凑表单属于 M3；正式 name、identifier、Appcast、配置手册、迁移说明和 Bob smoke test 仍属于 M4。
+M2 分支是非发布中间态；M3 已把新的 action settings 和五档 reasoning
+加入 `public/info.json`。正式 name、identifier、Appcast、完整迁移呈现和 Bob
+smoke test 仍属于 M4。

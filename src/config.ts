@@ -113,9 +113,16 @@ const parseModel = (selectedModel: string, customModel: string): string => {
 };
 
 const parseReasoningMode = (value: string): ReasoningMode => {
-  if (value === 'default' || value === 'disable') {
+  if (
+    value === 'auto' ||
+    value === 'deep' ||
+    value === 'default' ||
+    value === 'fast' ||
+    value === 'standard'
+  ) {
     return value;
   }
+  if (value === 'disable') return 'fast';
   throw createConfigError(
     '配置错误：未知推理模式',
     `不支持的推理模式：${value || '(empty)'}`,
@@ -209,7 +216,7 @@ export const parseOptions = (
     model,
     protocol,
     provider,
-    reasoningMode: parseReasoningMode(options.reasoningMode || 'default'),
+    reasoningMode: parseReasoningMode(options.reasoningMode || 'auto'),
     stream: parseStream(options.stream || 'enable'),
   };
 

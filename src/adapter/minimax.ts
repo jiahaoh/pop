@@ -3,7 +3,7 @@ import type {
   ValidationCompletion,
 } from '@bob-translate/types';
 import type { EventSourceMessage } from 'eventsource-parser';
-import type { PromptPair } from '../types';
+import type { PromptPair, ReasoningProfile } from '../types';
 import { resolveModelControls } from '../utils/model-capabilities';
 import { OpenAiAdapter } from './openai';
 
@@ -27,14 +27,15 @@ export class MiniMaxAdapter extends OpenAiAdapter {
 
   public override buildRequestBody(
     prompts: PromptPair,
+    reasoningProfile: ReasoningProfile,
   ): Record<string, unknown> {
     this.streamedText = '';
-    const body = super.buildRequestBody(prompts);
+    const body = super.buildRequestBody(prompts, reasoningProfile);
     body.reasoning_split = true;
     const controls = resolveModelControls(
       this.config.provider,
       this.config.model,
-      this.config.reasoningMode,
+      reasoningProfile,
     );
     if (controls.miniMaxThinking) {
       body.thinking = { type: controls.miniMaxThinking };
@@ -62,7 +63,7 @@ export class MiniMaxAdapter extends OpenAiAdapter {
     const controls = resolveModelControls(
       this.config.provider,
       this.config.model,
-      'disable',
+      'fast',
     );
     if (controls.miniMaxThinking) {
       body.max_completion_tokens = 8;

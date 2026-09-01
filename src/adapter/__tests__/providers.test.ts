@@ -48,7 +48,7 @@ describe('provider dispatch', () => {
 describe('OpenAI protocol codec', () => {
   it('builds a minimal Responses request and omits temperature', () => {
     const adapter = new OpenAiAdapter(createTestConfig());
-    const body = adapter.buildRequestBody(prompts);
+    const body = adapter.buildRequestBody(prompts, 'default');
     expect(adapter.getTextGenerationUrl()).toBe(
       'https://api.openai.com/v1/responses',
     );
@@ -63,11 +63,14 @@ describe('OpenAI protocol codec', () => {
     expect(body.instructions).toBe(prompts.system);
     expect(body.input).toBe(prompts.user);
 
-    const disabled = new OpenAiAdapter(
-      createTestConfig({ reasoningMode: 'disable' }),
-    );
-    expect(disabled.buildRequestBody(prompts).reasoning).toEqual({
+    expect(adapter.buildRequestBody(prompts, 'fast').reasoning).toEqual({
       effort: 'none',
+    });
+    expect(adapter.buildRequestBody(prompts, 'standard').reasoning).toEqual({
+      effort: 'medium',
+    });
+    expect(adapter.buildRequestBody(prompts, 'deep').reasoning).toEqual({
+      effort: 'high',
     });
   });
 
@@ -79,7 +82,7 @@ describe('OpenAI protocol codec', () => {
         apiUrl: 'http://localhost:11434/v1/chat/completions',
       }),
     );
-    const body = adapter.buildRequestBody(prompts);
+    const body = adapter.buildRequestBody(prompts, 'deep');
     expect(body.messages).toEqual([
       { role: 'system', content: prompts.system },
       { role: 'user', content: prompts.user },
@@ -87,6 +90,30 @@ describe('OpenAI protocol codec', () => {
     expect(body.instructions).toBeUndefined();
     expect(body.reasoning_effort).toBeUndefined();
     expect(body.temperature).toBeUndefined();
+  });
+
+  it('maps only exact verified OpenAI IDs through a compatible endpoint', () => {
+    const verified = new OpenAiAdapter(
+      createTestConfig({
+        apiUrl: 'https://gateway.example/v1/chat/completions',
+        customModel: 'gpt-5.6-luna',
+        model: 'custom',
+      }),
+    );
+    expect(verified.buildRequestBody(prompts, 'deep').reasoning_effort).toBe(
+      'high',
+    );
+
+    const namespaced = new OpenAiAdapter(
+      createTestConfig({
+        apiUrl: 'https://gateway.example/v1/chat/completions',
+        customModel: 'openai/gpt-5.6-luna',
+        model: 'custom',
+      }),
+    );
+    expect(
+      namespaced.buildRequestBody(prompts, 'deep').reasoning_effort,
+    ).toBeUndefined();
   });
 
   it('parses Responses and Chat Completions response shapes', () => {
@@ -153,7 +180,7 @@ describe('Azure OpenAI codec', () => {
         apiUrl: 'https://resource.openai.azure.com/openai/v1/responses',
       }),
     );
-    const body = adapter.buildRequestBody(prompts);
+    const body = adapter.buildRequestBody(prompts, 'deep');
     expect(adapter.getTextGenerationUrl()).toBe(
       'https://resource.openai.azure.com/openai/v1/responses',
     );
@@ -170,7 +197,7 @@ describe('Gemini codec', () => {
         model: 'gemini-3.6-flash',
       }),
     );
-    const body = adapter.buildRequestBody(prompts);
+    const body = adapter.buildRequestBody(prompts, 'default');
     expect(adapter.getTextGenerationUrl()).toBe(
       'https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:streamGenerateContent?alt=sse',
     );
@@ -183,14 +210,16 @@ describe('Gemini codec', () => {
       { role: 'user', parts: [{ text: prompts.user }] },
     ]);
 
-    const disabled = new GeminiAdapter(
-      createTestConfig({
-        model: 'gemini-3.6-flash',
-        reasoningMode: 'disable',
-      }),
-    );
-    expect(disabled.buildRequestBody(prompts).generationConfig).toEqual({
+    expect(adapter.buildRequestBody(prompts, 'fast').generationConfig).toEqual({
       thinkingConfig: { thinkingLevel: 'minimal' },
+    });
+    expect(
+      adapter.buildRequestBody(prompts, 'standard').generationConfig,
+    ).toEqual({
+      thinkingConfig: { thinkingLevel: 'medium' },
+    });
+    expect(adapter.buildRequestBody(prompts, 'deep').generationConfig).toEqual({
+      thinkingConfig: { thinkingLevel: 'high' },
     });
   });
 
@@ -217,7 +246,7 @@ describe('MiniMax codec', () => {
     const adapter = new MiniMaxAdapter(
       createTestConfig({ model: 'MiniMax-M3' }),
     );
-    const body = adapter.buildRequestBody(prompts);
+    const body = adapter.buildRequestBody(prompts, 'default');
     expect(adapter.getTextGenerationUrl()).toBe(
       'https://api.minimax.io/v1/chat/completions',
     );
@@ -231,14 +260,24 @@ describe('MiniMax codec', () => {
   });
 
   it('disables reasoning for supported models', () => {
-    const disabled = new MiniMaxAdapter(
-      createTestConfig({
-        model: 'MiniMax-M3',
-        reasoningMode: 'disable',
-      }),
+    const adapter = new MiniMaxAdapter(
+      createTestConfig({ model: 'MiniMax-M3' }),
     );
-    expect(disabled.buildRequestBody(prompts).thinking).toEqual({
+    expect(adapter.buildRequestBody(prompts, 'fast').thinking).toEqual({
       type: 'disabled',
     });
+    expect(adapter.buildRequestBody(prompts, 'standard').thinking).toEqual({
+      type: 'adaptive',
+    });
+    expect(adapter.buildRequestBody(prompts, 'deep').thinking).toEqual({
+      type: 'enabled',
+    });
+  });
+
+  it('omits thinking controls for MiniMax M2.x', () => {
+    const adapter = new MiniMaxAdapter(
+      createTestConfig({ model: 'MiniMax-M2.7-highspeed' }),
+    );
+    expect(adapter.buildRequestBody(prompts, 'deep').thinking).toBeUndefined();
   });
 });

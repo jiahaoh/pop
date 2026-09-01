@@ -70,11 +70,13 @@ flowchart TD
   Config --> Key[select one configured API key]
   Config --> Command[parseCommand]
   Command --> Resolve[resolveTask and TaskProfile]
+  Resolve --> Reasoning[resolveTaskReasoning]
   Resolve --> Prompt[createPrompts to PromptPair]
   Config --> Dispatch[getServiceAdapter]
   Dispatch --> Adapter[provider adapter]
 
-  Adapter --> Controls[resolveModelControls]
+  Reasoning --> Controls[resolveModelControls]
+  Adapter --> Controls
   Adapter --> Wire[build URL headers and body]
   Prompt --> Wire[build URL headers and body]
   Controls --> Wire
@@ -112,6 +114,8 @@ The important boundaries are:
   a validated `PluginConfig` and never read global settings.
 - `parseCommand()` and `resolveTask()` are pure provider-neutral steps. Unknown
   commands, empty bodies, and invalid Custom settings complete before a request.
+- `resolveTaskReasoning()` turns Auto into the resolved task's recommendation.
+  Adapters receive only Model default, Fast, Standard, or Deep.
 - Prompt construction produces one provider-neutral `PromptPair`. Provider
   adapters place it into `instructions`/`input`, `messages`, or Gemini
   `contents` without choosing or interpreting the action.
@@ -137,8 +141,9 @@ The important boundaries are:
 4. If a URL is configured, detect Azure from its host or path, retain the native
    MiniMax codec for verified official MiniMax Chat Completions hosts, and route
    every other URL through the OpenAI-compatible adapter.
-5. Parse reasoning, streaming, shared requirements, and one optional Custom
-   action; freeze the API-key array and final configuration.
+5. Parse Auto, Model default, Fast, Standard, or Deep reasoning; migrate the
+   legacy `disable` value to Fast; parse streaming, shared requirements, and one
+   optional Custom action; freeze the API-key array and final configuration.
 
 The URL selects the protocol before adapter construction. This prevents a
 provider menu, base URL field, and API path field from becoming three separate
@@ -264,7 +269,7 @@ the implementation. The following clarifications were needed:
 | Entry and configuration | Bob entry functions parse `$option`, select one key, dispatch one adapter, and route failures to supported callbacks | Bob's actual global values and callback behavior require installation |
 | Task and prompt | Current task behavior is prompt-template based; there is no action parser or task registry yet | The future action engine must stay provider-neutral |
 | Provider selection | Provider and protocol derivation match `config.ts` and its tests | A compatible gateway can implement only part of an official model contract |
-| Model controls | Default omits controls; disable uses exact provider/model mappings | A known OpenAI model ID on an OpenAI-compatible endpoint currently reuses the OpenAI mapping; gateway acceptance is not guaranteed |
+| Model controls | Model default omits controls; Fast, Standard, and Deep use exact provider/model mappings after Auto resolves from the action | A known OpenAI model ID on an OpenAI-compatible endpoint currently reuses the OpenAI mapping; gateway acceptance is not guaranteed |
 | Streaming | A real parser covers chunk boundaries, multiline events, raw JSON errors, terminal errors, and a 1 MiB bound | Bob's ordering of `streamHandler`, terminal `handler`, and cancellation callbacks must be observed |
 | Completion | Streaming and validation have explicit once guards; tested terminal paths complete once | Non-streaming relies on `onCompletion` not throwing; installed Bob remains the authority |
 | Errors and privacy | Errors become `ServiceError`; transport adds provider help links; runtime code contains no logging calls | Exported Bob logs must still be inspected during an intentional failure |

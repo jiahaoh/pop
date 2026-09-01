@@ -1,6 +1,6 @@
 # Configuration Manual
 
-Enter an API key to use the default OpenAI configuration: the default model, official API, streaming output, and model-default reasoning behavior.
+Enter an API key to use the default OpenAI configuration: the default model, official API, streaming output, and task-aware automatic reasoning.
 
 ## Quick start
 
@@ -62,36 +62,35 @@ Both modes respond to Bob's cancellation action. Invalid stream data, API errors
 
 ## Reasoning
 
-By default, the plugin omits reasoning controls and lets the model decide.
+The default is Auto. Translate, Polish, and Grammar use the latency-oriented Fast profile; Ask and Wording use the balanced Standard profile; Custom uses the model default because the user defines its complexity.
 
 | Setting | Behavior |
 | --- | --- |
-| Default | Omit reasoning controls and use the model default |
-| Disable | Disable reasoning where supported; otherwise use the lowest level |
+| Auto | Use the recommendation for the current action |
+| Model default | Omit reasoning controls |
+| Fast | Use the lowest or disabled level verified for the model |
+| Standard | Use the balanced level verified for the model |
+| Deep | Use the high level verified for the model |
 
-Disable sends a reasoning control only to models with verified support. Unknown models receive no reasoning field. Support varies between third-party APIs; use Default if the service rejects the field.
+The plugin sends a reasoning field only for an exact model ID with verified support. Unknown and namespaced custom model IDs receive no reasoning field. Support varies between third-party APIs; use Model default if the service rejects the field.
 
-## System and user prompts
+## Additional requirements and Custom
 
-The system prompt defines the plugin's purpose and core rules. Change it to turn the default translation task into polishing, rewriting, or another text-processing task.
+Additional requirements add terminology, tone, or formatting preferences shared by every built-in action. They do not replace the selected action or its safety boundary.
 
-The user prompt defines how each input is presented to the model. While keeping the same purpose, use it to add terminology, tone, formatting, or other per-request rules.
+Custom uses three fields:
 
-Both fields have editable defaults and support:
+- Custom command adds one optional ASCII alias such as `/s`; `/custom` and `/c` remain available
+- Custom instruction defines the task and output boundary, may use `$sourceLang` and `$targetLang`, and cannot contain `$text`
+- Custom user template controls how runtime text is presented, must contain `$text`, and may use `$sourceLang` and `$targetLang`
 
-- `$text`: input text
-- `$sourceLang`: source language
-- `$targetLang`: target language
-
-For example, while keeping translation as the system purpose, the user prompt can be:
+For example, set the command to `/s`, the instruction to `Summarize the text for $targetLang readers. Return only the summary.`, and keep this user template:
 
 ```text
-Keep technical terms in English and preserve Markdown:
-
 $text
 ```
 
-Every occurrence of a variable is replaced.
+Entering `/s Long text` now runs that custom task. The task instruction and runtime text remain separate.
 
 ## Temperature
 
@@ -104,7 +103,7 @@ The plugin has no Temperature setting and does not send `temperature`. Model sup
 - OpenAI-compatible API: use the model ID from its documentation and enter the full API URL.
 - `Invalid API URL`: ensure the address ends in `/responses` or `/chat/completions`.
 - Azure OpenAI: enter the deployment name as the custom model and use the full `*.openai.azure.com` request URL.
-- The translation API rejects reasoning fields: set Reasoning to Default.
+- The translation API rejects reasoning fields: set Reasoning to Model default.
 
 Official references:
 
@@ -113,7 +112,7 @@ Official references:
 - [Cloudflare AI Gateway REST API](https://developers.cloudflare.com/ai-gateway/usage/rest-api/)
 - [Gemini API](https://ai.google.dev/gemini-api/docs)
 - [MiniMax China OpenAI-compatible API](https://platform.minimaxi.com/docs/api-reference/text-chat-openai)
-- [MiniMax OpenAI-compatible API](https://platform.minimax.io/docs/api-reference/text-openai-api)
+- [MiniMax OpenAI-compatible API](https://platform.minimax.io/docs/api-reference/text-chat-openai)
 - [OpenAI API](https://developers.openai.com/api/docs)
 - [OpenRouter Quickstart](https://openrouter.ai/docs/quickstart)
 - [Vercel AI Gateway Chat Completions](https://vercel.com/docs/ai-gateway/sdks-and-apis/openai-chat-completions/chat-completions)

@@ -11,7 +11,7 @@ export const createTestConfig = (
     customSystemPrompt: '',
     customUserPrompt: '',
     model: 'gpt-5.6-luna',
-    reasoningMode: 'default',
+    reasoningMode: 'auto',
     stream: 'enable',
     ...overrides,
   });

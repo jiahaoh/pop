@@ -57,9 +57,10 @@ release when both environments are available.
 
 - Prerequisite: the development package is installed.
 - Action: open the service settings and scan the form from top to bottom.
-- Expected: API Key, API URL, model, custom model, streaming, reasoning, system
-  prompt, and user prompt render in the order defined by `public/info.json`;
-  labels and descriptions are readable without clipped or overlapping controls.
+- Expected: API Key, model, custom model, API URL, reasoning, streaming,
+  additional requirements, Custom command, Custom instruction, and Custom user
+  template render in the order defined by `public/info.json`; labels and
+  descriptions are readable without clipped or overlapping controls.
 
 ### S2 — Field types and defaults
 
@@ -67,14 +68,16 @@ release when both environments are available.
   defaults.
 - Action: inspect every control and select each menu value once.
 - Expected: API Key is secure; text areas have usable heights; the model,
-  streaming, reasoning, system prompt, and user prompt defaults match
-  `public/info.json`; every menu item is selectable.
+  streaming, reasoning, and Custom user-template defaults match
+  `public/info.json`; Auto, Model default, Fast, Standard, and Deep are each
+  selectable.
 
-### S3 — Custom model and prompt editing
+### S3 — Custom model and action editing
 
 - Prerequisite: settings form is open.
-- Action: select Custom model, enter a raw model ID, edit both prompt fields,
-  and insert each advertised keyword.
+- Action: select Custom model, enter a raw model ID, then edit additional
+  requirements plus all three Custom action fields and insert each advertised
+  keyword.
 - Expected: values can be saved and reopened unchanged; Bob preserves the
   unusual schema field `keyWords`; no undocumented conditional rendering is
   assumed.
@@ -187,10 +190,10 @@ key or full wire payload.
 | R3 | Non-streaming completion assumes Bob's `query.onCompletion` does not throw | A throwing callback could cause a second completion attempt | Verify normal Bob behavior; add a shared terminal guard if future evidence requires it |
 | R4 | Passing `cancelSignal` is statically tested, but Bob's cancellation terminal behavior is not | Late output or a hanging request can remain | Record T3 behavior in supported Bob versions |
 | R5 | Development version precedence and asynchronous copy behavior are Bob-specific | Bob may silently keep an older installed copy | Compare archive and copied metadata in P2 |
-| R6 | Exact OpenAI model mappings are reused for an OpenAI-compatible endpoint when the same model ID is configured | A partial gateway may reject a reasoning parameter | Revisit capability mapping in M3; test representative gateways before claiming support |
+| R6 | Exact OpenAI model mappings are reused for an OpenAI-compatible endpoint only when the same model ID is configured; unknown and namespaced IDs omit controls | A partial gateway may still reject a reasoning parameter | Test representative gateways before claiming support |
 | R7 | Bob's option form is static and saved-setting migration is a release contract | New Pop settings can become crowded or break saved values | Freeze identity and migration decisions in M1 before changing metadata/settings |
 | R8 | Multiple comma-separated API keys are selected randomly, including during validation | One bad key can make validation intermittent | Keep keys individually valid or add deterministic diagnostics in a future scoped change |
-| R9 | Provider model and reasoning contracts can drift after repository documentation is verified | Valid request bodies can become stale | Recheck current official provider sources in M3/M4 |
+| R9 | Provider model and reasoning contracts can drift after repository documentation is verified | Valid request bodies can become stale | M3 sources were refreshed on 2026-08-31; recheck again during M4 release validation |
 | R10 | Direct live tests use Bun/browser-style APIs, not Bob `$http` | A provider probe can pass while the plugin fails in Bob | Treat live tests as supplemental; complete T1–T2 in Bob |
 
 ## Confirmed input to M1

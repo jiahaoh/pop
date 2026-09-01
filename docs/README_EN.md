@@ -19,15 +19,15 @@ The default configuration uses OpenAI. Enter an API key after installation and s
 
 For Gemini or MiniMax, select the corresponding [model](./configuration_manual_EN.md#model). For a third-party API service, enter the [model](./configuration_manual_EN.md#model) and full [API URL](./configuration_manual_EN.md#api-url) specified by the service.
 
-See the configuration manual for [reasoning](./configuration_manual_EN.md#reasoning) and [system and user prompts](./configuration_manual_EN.md#system-and-user-prompts).
+See the configuration manual for [reasoning](./configuration_manual_EN.md#reasoning) and [additional requirements and Custom](./configuration_manual_EN.md#additional-requirements-and-custom).
 
 ## Features
 
 - Translate every language supported by Bob.
 - Polish and correct grammar when source and target languages match.
 - Stream results by default and cancel in-flight requests.
-- Use the model's default reasoning behavior, or reduce it to the lowest supported setting.
-- Change the purpose with the system prompt and refine each request with the user prompt.
+- Select reasoning automatically by action, or choose Model default, Fast, Standard, or Deep.
+- Share terminology, tone, or format requirements across actions and save one Custom text task.
 
 ## Development and contributions
 

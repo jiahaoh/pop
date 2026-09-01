@@ -16,7 +16,9 @@ export type ApiProtocol =
   | 'openai-chat-completions'
   | 'openai-responses';
 
-export type ReasoningMode = 'default' | 'disable';
+export type ReasoningProfile = 'deep' | 'default' | 'fast' | 'standard';
+
+export type ReasoningMode = 'auto' | ReasoningProfile;
 
 export type ActionId =
   | 'ask'
@@ -48,7 +50,7 @@ export interface TaskProfile {
   readonly id: ActionId;
   readonly languagePolicy: TaskLanguagePolicy;
   readonly outputPolicy: TaskOutputPolicy;
-  readonly recommendedReasoning: 'model-default';
+  readonly recommendedReasoning: ReasoningProfile;
   readonly safetyPolicy: TaskSafetyPolicy;
 }
 
@@ -94,7 +96,10 @@ export interface ProviderDefinition {
 
 export interface ServiceAdapter {
   buildHeaders(apiKey: string): Record<string, string>;
-  buildRequestBody(prompts: PromptPair): Record<string, unknown>;
+  buildRequestBody(
+    prompts: PromptPair,
+    reasoningProfile: ReasoningProfile,
+  ): Record<string, unknown>;
   getTextGenerationUrl(): string;
   parseResponse(response: HttpResponse<unknown>): string;
   testApiConnection(
@@ -105,5 +110,6 @@ export interface ServiceAdapter {
     query: TextTranslateQuery,
     prompts: PromptPair,
     apiKey: string,
+    reasoningProfile: ReasoningProfile,
   ): Promise<void>;
 }

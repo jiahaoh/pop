@@ -1,14 +1,16 @@
 # Architecture
 
-Implementation last verified: 2026-08-31 at `a4c0b75`. External documentation
-and comparable-project sources were last verified on 2026-07-23.
+Implementation last verified: 2026-08-31 on
+`codex/milestone-03-model-controls`. Provider control documentation was last
+verified on 2026-08-31; the remaining comparable-project sources were last
+verified on 2026-07-23.
 
 Start with the [maintainer orientation](./maintainer_orientation.md) for a
 code-reading path and full request lifecycle. Use the
 [Bob smoke-test checklist](./bob_smoke_test.md) for installed-host validation.
 The [Pop product contract](./product_contract.md) defines the action, command,
-output, release-identity, and compatibility behavior implemented by the M2
-runtime and staged for later settings and release work.
+output, release-identity, and compatibility behavior implemented through M3 and
+staged for final release work.
 
 ## Runtime boundary
 
@@ -21,6 +23,7 @@ Bob query + $option
   -> parseOptions()
   -> parseCommand()
   -> resolveTask() + TaskProfile registry
+  -> resolveTaskReasoning()
   -> createPrompts()
   -> provider dispatch + resolveModelControls()
   -> provider codec from PromptPair
@@ -49,16 +52,16 @@ The current configuration uses these decisions:
 - Provider is derived rather than user-selected. With no API URL, the model selects the official OpenAI, Gemini, or MiniMax adapter. With an API URL, Azure hosts and paths select Azure OpenAI, verified MiniMax official hosts retain the MiniMax stream codec, and other URLs use the OpenAI-compatible adapter.
 - API URL is optional and complete. The `/responses` or `/chat/completions` suffix selects the protocol without separate Base URL, path, or protocol fields.
 - Temperature is absent from the UI and every request. Provider defaults avoid invalid parameters as model sampling contracts evolve.
-- Reasoning has two choices. Default sends no control. Disable maps to the lowest verified model-specific setting; models without a verified mapping receive no control.
+- Reasoning has five choices. Auto resolves to the current action's provider-neutral recommendation; Model default omits controls; Fast, Standard, and Deep map to exact verified model capabilities. Unknown models receive no optional control.
 - Built-in actions use fixed task profiles and prompts. Transform actions keep the raw runtime text in the user message and explicitly treat it as data; Ask treats it as the user's real question.
 - Runtime parsing accepts `additionalRequirements` plus one optional Custom alias, instruction, and user template. Custom system instructions can use language variables but cannot interpolate `$text`; the user template must contain `$text`.
-- Menu values are case-insensitively sorted by `value`; the `custom` model entry is the only fixed first item.
+- The public form now exposes shared requirements plus one compact Custom action. The removed legacy System/User Prompt fields remain ignored by runtime parsing so stale test or development values do not become instructions.
+- Unordered menu values are case-insensitively sorted by `value`; the `custom` model entry and the meaningful Auto-to-Deep reasoning sequence keep fixed positions.
 
-The M2 branch is intentionally not release-ready by itself: `public/info.json`
-still exposes the legacy prompt fields while the runtime accepts the new action
-settings. M3 owns the compact Bob form and M4 owns manuals, migration guidance,
-identity, packaging, and installed-host validation. No intermediate package
-should be presented as a completed Pop release.
+The M3 branch is intentionally not release-ready by itself. M4 still owns the
+final Pop identity, Appcast, release packaging, migration presentation, and
+installed-host validation. No intermediate package should be presented as a
+completed Pop release.
 
 ## Provider contracts
 
@@ -74,26 +77,39 @@ Provider dispatch is an exhaustive TypeScript switch. A new wire provider requir
 
 ## Model controls
 
-`resolveModelControls(provider, model, mode)` is the only runtime capability resolver.
+`resolveTaskReasoning(mode, recommendation)` resolves Auto before adapter
+construction. `resolveModelControls(provider, model, profile)` is the only
+runtime capability resolver and cannot accept the unresolved Auto value.
 
-Default always omits the provider control.
+Model default always omits the provider control. Auto recommendations are Fast
+for Translate, Polish, and Grammar; Standard for Ask and Wording; and Model
+default for Custom, whose complexity is user-defined. An explicit user choice
+overrides the recommendation.
 
 Only exact model IDs with a current provider contract receive a control:
 
-| Model ID | Disable |
-| --- | --- |
-| `gemini-2.5-flash`, `gemini-2.5-flash-lite` | thinking budget `0` |
-| `gemini-2.5-pro` | thinking budget `128` |
-| `gemini-3-flash-preview`, `gemini-3.5-flash`, `gemini-3.5-flash-lite`, `gemini-3.6-flash` | thinking level `minimal` |
-| `gemini-3-pro-preview`, `gemini-3.1-pro-preview` | thinking level `low` |
-| `gpt-5` | `minimal` |
-| `gpt-5.3-codex` | `low` |
-| `gpt-5.4-mini`, `gpt-5.6`, `gpt-5.6-luna`, `gpt-5.6-sol`, `gpt-5.6-terra` | `none` |
-| `gpt-5-pro` | `high` |
-| `MiniMax-M3` | thinking `disabled` |
-| Any other ID | omitted |
+| Model ID | Fast | Standard | Deep |
+| --- | --- | --- | --- |
+| `gemini-2.5-flash`, `gemini-2.5-flash-lite` | budget `0` | budget `8192` | budget `24576` |
+| `gemini-2.5-pro` | budget `128` | budget `8192` | budget `24576` |
+| `gemini-3-flash-preview`, `gemini-3.5-flash`, `gemini-3.5-flash-lite`, `gemini-3.6-flash` | `minimal` | `medium` | `high` |
+| `gemini-3-pro-preview` | `low` | `high` | `high` |
+| `gemini-3.1-pro-preview` | `low` | `medium` | `high` |
+| `gemini-3.7-flash` | `low` | `medium` | `high` |
+| `gpt-5` | `minimal` | `medium` | `high` |
+| `gpt-5.3-codex` | `low` | `medium` | `high` |
+| `gpt-5.4-mini`, `gpt-5.6`, `gpt-5.6-luna`, `gpt-5.6-sol`, `gpt-5.6-terra` | `none` | `medium` | `high` |
+| `gpt-5-pro` | `high` | `high` | `high` |
+| `MiniMax-M3` | `disabled` | `adaptive` | `enabled` |
+| Any other ID | omitted | omitted | omitted |
 
 Request codecs translate the normalized result into `reasoning`, `reasoning_effort`, `thinkingConfig`, or `thinking`. Capability code does not construct transport payloads.
+
+An OpenAI-compatible endpoint receives a reasoning field only when its exact
+model ID is also in the verified OpenAI capability map. A custom or namespaced
+model ID receives the minimal base request even if its name resembles a known
+model. This keeps custom-model requests functional without guessing at gateway
+support.
 
 MiniMax requests set `reasoning_split` so reasoning does not enter the translated text. Its documented cumulative stream content is converted back to deltas before Bob callbacks.
 
@@ -198,7 +214,10 @@ The linked [Bob 1.8 plugin changes](https://bobtranslate.com/blog/2023-05-18-180
 - [Gemini prompting strategies](https://ai.google.dev/gemini-api/docs/prompting-strategies)
 - [Gemini thinking](https://ai.google.dev/gemini-api/docs/thinking)
 - [MiniMax China OpenAI-compatible API](https://platform.minimaxi.com/docs/api-reference/text-chat-openai)
-- [MiniMax OpenAI-compatible API](https://platform.minimax.io/docs/api-reference/text-openai-api)
+- [MiniMax Chat Completions API](https://platform.minimax.io/docs/api-reference/text-chat-openai)
+- [MiniMax-M3 model card](https://huggingface.co/MiniMaxAI/MiniMax-M3)
+- [OpenAI GPT-5.4 Mini](https://developers.openai.com/api/docs/models/gpt-5.4-mini)
+- [OpenAI GPT-5.6 Luna](https://developers.openai.com/api/docs/models/gpt-5.6-luna)
 - [OpenAI model guidance](https://developers.openai.com/api/docs/guides/latest-model)
 - [OpenAI prompt engineering](https://developers.openai.com/api/docs/guides/prompt-engineering)
 - [OpenAI reasoning](https://developers.openai.com/api/docs/guides/reasoning)

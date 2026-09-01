@@ -74,7 +74,7 @@ const results = {
     getServiceAdapter(config);
   }),
   requestConstruction: measure(() => {
-    adapter.buildRequestBody(prompts);
+    adapter.buildRequestBody(prompts, 'default');
   }),
   streamEventParsing: measure(() => {
     streamParser.reset(query);

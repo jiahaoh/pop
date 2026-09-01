@@ -1,6 +1,6 @@
 # 配置手册
 
-填写 API Key 后即可使用默认的 OpenAI 配置，包括默认模型、官方 API、流式输出和模型默认推理设置。
+填写 API Key 后即可使用默认的 OpenAI 配置，包括默认模型、官方 API、流式输出和按 action 自动选择的推理设置。
 
 ## 最快开始
 
@@ -62,36 +62,35 @@ API URL 可留空。留空时使用模型对应的官方地址。
 
 ## 推理
 
-默认情况下，插件不发送推理控制参数，由模型决定。
+默认选择「自动（按任务）」。Translate、Polish、Grammar 使用延迟优先的快速档；Ask 和 Wording 使用平衡的标准档；任务复杂度由用户定义的 Custom 使用模型默认。
 
 | 选项 | 行为 |
 | --- | --- |
-| 默认 | 不发送推理控制参数，使用模型默认设置 |
-| 关闭 | 支持关闭时禁用；无法完全关闭时使用最低档位 |
+| 自动（按任务） | 使用当前 action 的推荐档位 |
+| 模型默认 | 不发送推理控制参数 |
+| 快速 | 使用模型已确认支持的最低或关闭档位 |
+| 标准 | 使用模型已确认支持的平衡档位 |
+| 深入 | 使用模型已确认支持的高档位 |
 
-「关闭」只会向已确认支持该设置的模型发送参数。未知模型不会收到推理参数。第三方 API 对这些参数的支持程度不同；如果服务不支持，使用「默认」。
+插件只会向精确匹配、已确认支持的 model ID 发送推理参数。未知模型和带命名空间的自定义 model ID 不会收到推理参数。第三方 API 对这些字段的支持程度不同；如果服务拒绝该字段，使用「模型默认」。
 
-## 系统指令和用户指令
+## 额外要求与 Custom
 
-系统指令决定插件的用途和基本规则。要把默认翻译改成润色、改写或其他文本处理任务，应修改系统指令。
+「额外要求」补充所有内置 action 共用的术语、语气或格式偏好。它不会改变当前 action 的任务和安全边界。
 
-用户指令决定每次如何把原文交给模型。用途不变时，可在这里补充术语、语气、格式等本次请求规则。
+Custom 使用三个字段：
 
-两个字段都有可直接编辑的默认值，并支持：
+- 「Custom 命令」可增加一个 ASCII 短别名，例如 `/s`；`/custom` 和 `/c` 始终可用
+- 「Custom 指令」定义任务和输出边界，可使用 `$sourceLang`、`$targetLang`，不能包含 `$text`
+- 「Custom 正文模板」决定如何把运行时正文交给模型，必须包含 `$text`，并可使用 `$sourceLang`、`$targetLang`
 
-- `$text`：原文
-- `$sourceLang`：源语言
-- `$targetLang`：目标语言
-
-例如，系统指令保持翻译用途时，可以把用户指令改为：
+例如，把命令设为 `/s`、指令设为 `Summarize the text for $targetLang readers. Return only the summary.`，正文模板保持：
 
 ```text
-保留技术术语的英文原文，并保持 Markdown 格式：
-
 $text
 ```
 
-同一变量出现多次时会全部替换。
+之后输入 `/s 长文本` 即可运行这项自定义任务。任务指令与运行时正文保持分离。
 
 ## Temperature
 
@@ -104,7 +103,7 @@ $text
 - 使用 OpenAI 兼容 API：确认模型 ID 与服务文档一致，并填写完整 API URL。
 - `API URL 格式不正确`：检查地址是否以 `/responses` 或 `/chat/completions` 结尾。
 - Azure OpenAI：自定义模型填写部署名，API URL 使用 `*.openai.azure.com` 的完整请求地址。
-- 翻译接口不支持推理参数：将「推理」改为「默认」。
+- 翻译接口不支持推理参数：将「推理」改为「模型默认」。
 
 官方参考：
 
@@ -112,7 +111,7 @@ $text
 - [Bob 插件文档](https://bobtranslate.com/plugin/)
 - [Cloudflare AI Gateway REST API](https://developers.cloudflare.com/ai-gateway/usage/rest-api/)
 - [Gemini API](https://ai.google.dev/gemini-api/docs)
-- [MiniMax OpenAI-compatible API](https://platform.minimax.io/docs/api-reference/text-openai-api)
+- [MiniMax OpenAI-compatible API](https://platform.minimax.io/docs/api-reference/text-chat-openai)
 - [MiniMax 中国区 OpenAI-compatible API](https://platform.minimaxi.com/docs/api-reference/text-chat-openai)
 - [OpenAI API](https://developers.openai.com/api/docs)
 - [OpenRouter Quickstart](https://openrouter.ai/docs/quickstart)

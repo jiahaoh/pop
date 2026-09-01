@@ -28,7 +28,7 @@ const setOptions = (overrides: Partial<Record<string, string>> = {}) => {
       customActionInstruction: 'Summarize the runtime text.',
       customActionUserTemplate: 'Text:\n$text',
       model: 'gpt-5.6-luna',
-      reasoningMode: 'default',
+      reasoningMode: 'auto',
       stream: 'disable',
       ...overrides,
     },
@@ -67,31 +67,37 @@ describe('Bob entry action orchestration', () => {
       {
         input: '/ask Why?',
         instruction: 'Answer the question in the user message directly',
+        reasoningEffort: 'medium',
         user: 'Why?',
       },
       {
         input: '/s Long text',
         instruction: 'Execute the user-configured text task below',
+        reasoningEffort: undefined,
         user: 'Text:\nLong text',
       },
       {
         input: '/g This are wrong.',
         instruction: 'Correct grammar, spelling, and usage',
+        reasoningEffort: 'none',
         user: 'This are wrong.',
       },
       {
         input: '/p Hello',
         instruction: 'Polish the user message',
+        reasoningEffort: 'none',
         user: 'Hello',
       },
       {
         input: '/t Hello',
         instruction: 'Translate the user message from en to zh-CN',
+        reasoningEffort: 'none',
         user: 'Hello',
       },
       {
         input: '/w Deadline extension',
         instruction: 'Provide better wording for the request',
+        reasoningEffort: 'medium',
         user: 'Deadline extension',
       },
     ];
@@ -107,6 +113,9 @@ describe('Bob entry action orchestration', () => {
       >;
       expect(body.instructions).toContain(testCase.instruction);
       expect(body.input).toBe(testCase.user);
+      expect((body.reasoning as { effort?: string } | undefined)?.effort).toBe(
+        testCase.reasoningEffort,
+      );
     }
     expect(request).toHaveBeenCalledTimes(cases.length);
   });
@@ -122,6 +131,15 @@ describe('Bob entry action orchestration', () => {
     expect(request.mock.calls[1][0].body).toMatchObject({
       instructions: expect.stringContaining('Polish the user message'),
       input: 'Hello',
+    });
+  });
+
+  it('lets an explicit reasoning mode override the task recommendation', async () => {
+    setOptions({ reasoningMode: 'deep' });
+    await runTranslation('/t Hello');
+
+    expect(request.mock.calls[0][0].body).toMatchObject({
+      reasoning: { effort: 'high' },
     });
   });
 

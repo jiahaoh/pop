@@ -4,7 +4,7 @@ import type {
   ValidationCompletion,
 } from '@bob-translate/types';
 import type { EventSourceMessage } from 'eventsource-parser';
-import type { PromptPair } from '../types';
+import type { PromptPair, ReasoningProfile } from '../types';
 import { resolveModelControls } from '../utils/model-capabilities';
 import { BaseAdapter } from './base';
 
@@ -105,11 +105,14 @@ export class OpenAiAdapter extends BaseAdapter {
     };
   }
 
-  public buildRequestBody(prompts: PromptPair): Record<string, unknown> {
+  public buildRequestBody(
+    prompts: PromptPair,
+    reasoningProfile: ReasoningProfile,
+  ): Record<string, unknown> {
     const controls = resolveModelControls(
       this.config.provider,
       this.config.model,
-      this.config.reasoningMode,
+      reasoningProfile,
     );
 
     if (this.config.protocol === 'openai-chat-completions') {

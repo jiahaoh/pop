@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'bun:test';
 import type { TextTranslateQuery } from '@bob-translate/types';
-import { TASK_PROFILES } from '../profiles';
+import { resolveTaskReasoning, TASK_PROFILES } from '../profiles';
 import { resolveTask } from '../resolve';
 
 const query = (detectFrom: string, detectTo: string) =>
@@ -23,8 +23,15 @@ describe('TaskProfile registry', () => {
     expect(Object.isFrozen(TASK_PROFILES)).toBe(true);
     for (const profile of Object.values(TASK_PROFILES)) {
       expect(Object.isFrozen(profile)).toBe(true);
-      expect(profile.recommendedReasoning).toBe('model-default');
     }
+    expect(TASK_PROFILES).toMatchObject({
+      ask: { recommendedReasoning: 'standard' },
+      custom: { recommendedReasoning: 'default' },
+      grammar: { recommendedReasoning: 'fast' },
+      polish: { recommendedReasoning: 'fast' },
+      translate: { recommendedReasoning: 'fast' },
+      wording: { recommendedReasoning: 'standard' },
+    });
   });
 
   it('records the frozen language, output, and safety policies', () => {
@@ -58,6 +65,13 @@ describe('TaskProfile registry', () => {
       outputPolicy: 'task-defined',
       safetyPolicy: 'runtime-text-is-data',
     });
+  });
+
+  it('resolves Auto before provider mapping and preserves explicit modes', () => {
+    expect(resolveTaskReasoning('auto', 'fast')).toBe('fast');
+    expect(resolveTaskReasoning('auto', 'standard')).toBe('standard');
+    expect(resolveTaskReasoning('auto', 'default')).toBe('default');
+    expect(resolveTaskReasoning('deep', 'fast')).toBe('deep');
   });
 });
 
