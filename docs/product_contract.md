@@ -271,3 +271,25 @@ M1 已没有阻塞 M2 的未决产品选择。多个自定义 action、AI intent
 M2 分支是非发布中间态；M3 已把新的 action settings 和五档 reasoning
 加入 `public/info.json`。正式 name、identifier、Appcast、完整迁移呈现和 Bob
 smoke test 仍属于 M4。
+
+## M3 本地实现状态
+
+2026-08-31，提交 `1519038` 在分支 `codex/milestone-03-model-controls`
+实现 M3：
+
+* Auto 在 adapter 之前解析为 action 推荐档位，显式选择始终覆盖推荐值
+* 精确 model ID 映射覆盖 OpenAI Responses、OpenAI-compatible Chat
+  Completions、Gemini GenerateContent 和 MiniMax Chat Completions；未知 ID
+  省略可选控制
+* `public/info.json` 按用户配置顺序提供十个紧凑字段，配置默认值、旧
+  `disable` 迁移和 Custom 边界均有测试
+* Bun 1.2.19 下 lint 与 typecheck 通过；98 项测试通过，2 项需显式凭据的
+  MiniMax live tests 按设计跳过；build 和静态 runtime check 通过，bundle 为
+  32,271 bytes
+* 开发包 `openai-translator-dev.bobplugin` 的 SHA-256 为
+  `72c692ed0d650fa0ebc0b58206e39a6205089f31c77039cea709121e63f4ac3c`；
+  包内版本为 `5.0.1dev1788222503758`，repository version 仍为 `5.0.1`
+
+开发包仍保留上游 name 和 identifier，不是 Pop 正式发布包。上述证据不证明 Bob
+JavaScriptCore 实际执行、设置渲染/保存、安装顺序或真实 provider；这些实机项目、
+正式 identity、Appcast 和迁移呈现仍属于 M4。
