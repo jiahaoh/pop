@@ -13,7 +13,7 @@ import {
 } from './utils/model-capabilities';
 
 export const CONFIGURATION_GUIDE_URL =
-  'https://github.com/nextai-translator/bob-plugin-openai-translator/blob/main/docs/configuration_manual_CN.md';
+  'https://github.com/jiahaoh/pop/blob/main/docs/configuration_manual_CN.md#最快开始';
 
 export const PROVIDERS = Object.freeze({
   'azure-openai': {

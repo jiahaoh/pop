@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'bun:test';
+import appcast from '../../appcast.json';
 import packageMetadata from '../../package.json';
 import info from '../../public/info.json';
+import { CONFIGURATION_GUIDE_URL } from '../config';
 import { DEFAULT_MODEL, MODEL_CATALOG } from '../utils/model-capabilities';
 
 type MenuOption = {
@@ -23,6 +25,27 @@ const getOption = (identifier: string): MenuOption => {
 };
 
 describe('info.json consistency', () => {
+  it('uses the independent Pop release identity', () => {
+    expect(packageMetadata).toMatchObject({
+      homepage: 'https://github.com/jiahaoh/pop',
+      name: 'pop-bobplugin',
+      version: '0.1.0',
+    });
+    expect(info).toMatchObject({
+      appcast:
+        'https://raw.githubusercontent.com/jiahaoh/pop/main/appcast.json',
+      author: 'Jiahao Huang',
+      homepage: 'https://github.com/jiahaoh/pop',
+      identifier: 'jiahaoh.pop',
+      name: 'Pop',
+      version: '0.1.0',
+    });
+    expect(appcast).toEqual({ identifier: 'jiahaoh.pop', versions: [] });
+    expect(JSON.stringify({ appcast, info, packageMetadata })).not.toContain(
+      'yetone.openai.translator',
+    );
+  });
+
   it('matches the runtime model catalog', () => {
     expect(getOption('model').menuValues?.slice(1)).toEqual(
       MODEL_CATALOG.map(({ id }) => ({ title: id, value: id })),
@@ -106,9 +129,10 @@ describe('info.json consistency', () => {
     expect(JSON.stringify(info)).toContain('Custom 指令');
   });
 
-  it('uses the clickable homepage for documentation', () => {
-    expect(info.homepage).toBe(
-      'https://github.com/nextai-translator/bob-plugin-openai-translator/blob/main/docs/configuration_manual_CN.md',
+  it('uses project and exact configuration-guide links', () => {
+    expect(info.homepage).toBe('https://github.com/jiahaoh/pop');
+    expect(CONFIGURATION_GUIDE_URL).toBe(
+      'https://github.com/jiahaoh/pop/blob/main/docs/configuration_manual_CN.md#最快开始',
     );
     for (const option of options) {
       if (!option.desc) continue;

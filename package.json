@@ -1,17 +1,17 @@
 {
-  "name": "bob-plugin-openai-translator",
-  "version": "5.0.1",
+  "name": "pop-bobplugin",
+  "version": "0.1.0",
   "private": true,
-  "description": "Multi-provider AI translation, polishing, and grammar correction for Bob.",
+  "description": "Selection-first, one-shot AI actions for Bob.",
   "type": "module",
   "license": "CC BY-NC-SA 4.0",
   "main": "dist/main.js",
   "keywords": [
+    "ai",
     "bob-plugin",
-    "openai",
-    "translator"
+    "text-actions"
   ],
-  "homepage": "https://github.com/nextai-translator/bob-plugin-openai-translator",
+  "homepage": "https://github.com/jiahaoh/pop",
   "scripts": {
     "benchmark": "bun run build && bun scripts/benchmark.mts",
     "build": "bun scripts/build.mts",

@@ -23,6 +23,8 @@ type PluginInfo = Record<string, unknown> & { version: string };
 
 const rootDir = path.resolve(import.meta.dir, '..');
 const distDir = path.resolve(rootDir, 'dist');
+export const PLUGIN_SLUG = 'pop';
+export const RELEASE_REPOSITORY = 'jiahaoh/pop';
 const STABLE_VERSION = /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/;
 
 const assertStableVersion = (version: string): void => {
@@ -127,7 +129,7 @@ async function packagePlugin(
   archiveVersion: string,
   metadataVersion?: string,
 ): Promise<string> {
-  const packageName = `openai-translator-${archiveVersion}.bobplugin`;
+  const packageName = `${PLUGIN_SLUG}-${archiveVersion}.bobplugin`;
   const packagePath = path.join(distDir, packageName);
   let sourceDir = distDir;
   let stagingDir: string | undefined;
@@ -135,7 +137,7 @@ async function packagePlugin(
   try {
     if (metadataVersion) {
       stagingDir = await mkdtemp(
-        path.join(os.tmpdir(), 'openai-translator-package-'),
+        path.join(os.tmpdir(), `${PLUGIN_SLUG}-package-`),
       );
       const info = await readDistInfo();
       info.version = metadataVersion;
@@ -205,13 +207,16 @@ async function updateAppcast(
       versions: [],
     };
   }
+  if (appcast.identifier !== pluginInfo.identifier) {
+    throw new Error(
+      `Appcast identifier ${appcast.identifier} does not match plugin identifier ${pluginInfo.identifier}`,
+    );
+  }
   validateReleaseVersion(
     version,
     pluginInfo.version,
     appcast.versions.map((release) => release.version),
   );
-  appcast.identifier = pluginInfo.identifier;
-
   const existingRelease = appcast.versions.find(
     (release) => release.version === version,
   );
@@ -219,7 +224,7 @@ async function updateAppcast(
     version,
     desc: desc.trim(),
     sha256: fileHash,
-    url: `https://github.com/nextai-translator/bob-plugin-openai-translator/releases/download/v${version}/openai-translator-${version}.bobplugin`,
+    url: `https://github.com/${RELEASE_REPOSITORY}/releases/download/v${version}/${PLUGIN_SLUG}-${version}.bobplugin`,
     minBobVersion: pluginInfo.minBobVersion,
     timestamp: existingRelease?.timestamp ?? Date.now(),
   };
@@ -249,7 +254,13 @@ if (import.meta.main) {
         await updateProjectVersion(version);
         await buildAndCheck();
         const packagePath = await packagePlugin(version);
+        const stablePackagePath = path.join(
+          distDir,
+          `${PLUGIN_SLUG}.bobplugin`,
+        );
+        await cp(packagePath, stablePackagePath);
         console.log(`Release package created: ${packagePath}`);
+        console.log(`Stable package alias created: ${stablePackagePath}`);
         break;
       }
       case 'appcast': {
@@ -266,7 +277,7 @@ if (import.meta.main) {
         await updateAppcast(
           version,
           desc,
-          path.join(distDir, `openai-translator-${version}.bobplugin`),
+          path.join(distDir, `${PLUGIN_SLUG}-${version}.bobplugin`),
         );
         break;
       }
@@ -277,7 +288,6 @@ if (import.meta.main) {
           await createDevelopmentVersion(),
         );
         console.log(`Development package created: ${packagePath}`);
-        await $`open -R ${packagePath}`;
         break;
       }
       default:

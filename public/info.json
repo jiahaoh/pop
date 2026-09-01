@@ -1,12 +1,12 @@
 {
-  "appcast": "https://raw.githubusercontent.com/nextai-translator/bob-plugin-openai-translator/main/appcast.json",
-  "author": "yetone <yetoneful@gmail.com>",
+  "appcast": "https://raw.githubusercontent.com/jiahaoh/pop/main/appcast.json",
+  "author": "Jiahao Huang",
   "category": "translate",
-  "homepage": "https://github.com/nextai-translator/bob-plugin-openai-translator/blob/main/docs/configuration_manual_CN.md",
+  "homepage": "https://github.com/jiahaoh/pop",
   "icon": "",
-  "identifier": "yetone.openai.translator",
+  "identifier": "jiahaoh.pop",
   "minBobVersion": "1.8.0",
-  "name": "OpenAI Translator",
+  "name": "Pop",
   "options": [
     {
       "desc": "多个 Key 可用英文逗号分隔",
@@ -168,6 +168,6 @@
       "type": "text"
     }
   ],
-  "summary": "使用 OpenAI、OpenAI 兼容 API 及 Gemini 等主流模型进行翻译与文本处理",
-  "version": "5.0.1"
+  "summary": "对选中文本执行翻译、润色、语法检查、问答、措辞和自定义任务",
+  "version": "0.1.0"
 }

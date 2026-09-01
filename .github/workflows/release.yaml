@@ -42,7 +42,7 @@ jobs:
             exit 1
           fi
           if [[ ! "$REQUESTED_VERSION" =~ ^v?(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$ ]]; then
-            echo "Version must use semantic version format, for example 5.0.0 or v5.0.0."
+            echo "Version must use semantic version format, for example 0.1.0 or v0.1.0."
             exit 1
           fi
           git fetch origin "$DEFAULT_BRANCH"
@@ -150,7 +150,7 @@ jobs:
           body: ${{ github.event.inputs.message }}
           draft: true
           fail_on_unmatched_files: true
-          files: dist/openai-translator-${{ env.VERSION_NUMBER }}.bobplugin
+          files: dist/pop-${{ env.VERSION_NUMBER }}.bobplugin
           name: ${{ env.VERSION }}
           overwrite_files: ${{ steps.release_state.outputs.overwrite }}
           tag_name: ${{ env.VERSION }}
@@ -163,8 +163,8 @@ jobs:
           VERSION: ${{ env.VERSION }}
           VERSION_NUMBER: ${{ env.VERSION_NUMBER }}
         run: |
-          PACKAGE_PATH="dist/openai-translator-$VERSION_NUMBER.bobplugin"
-          gh release download "$VERSION" --clobber --dir dist --pattern "openai-translator-$VERSION_NUMBER.bobplugin"
+          PACKAGE_PATH="dist/pop-$VERSION_NUMBER.bobplugin"
+          gh release download "$VERSION" --clobber --dir dist --pattern "pop-$VERSION_NUMBER.bobplugin"
           unzip -t "$PACKAGE_PATH"
 
           if [[ "$RELEASE_STATE" != "published" ]]; then
