@@ -1,7 +1,7 @@
 # Architecture
 
-Implementation last verified: 2026-08-31 on
-`codex/milestone-03-model-controls`. Provider control documentation was last
+Implementation last verified: 2026-09-01 on
+`codex/milestone-04-bob-validation-release`. Provider control documentation was last
 verified on 2026-08-31; the remaining comparable-project sources were last
 verified on 2026-07-23.
 
@@ -9,8 +9,9 @@ Start with the [maintainer orientation](./maintainer_orientation.md) for a
 code-reading path and full request lifecycle. Use the
 [Bob smoke-test checklist](./bob_smoke_test.md) for installed-host validation.
 The [Pop product contract](./product_contract.md) defines the action, command,
-output, release-identity, and compatibility behavior implemented through M3 and
-staged for final release work.
+output, release-identity, and compatibility behavior. M4 has applied the
+independent release identity and user documentation; installed Bob validation
+remains a separate evidence layer.
 
 ## Runtime boundary
 
@@ -58,10 +59,11 @@ The current configuration uses these decisions:
 - The public form now exposes shared requirements plus one compact Custom action. The removed legacy System/User Prompt fields remain ignored by runtime parsing so stale test or development values do not become instructions.
 - Unordered menu values are case-insensitively sorted by `value`; the `custom` model entry and the meaningful Auto-to-Deep reasoning sequence keep fixed positions.
 
-The M3 branch is intentionally not release-ready by itself. M4 still owns the
-final Pop identity, Appcast, release packaging, migration presentation, and
-installed-host validation. No intermediate package should be presented as a
-completed Pop release.
+Pop now uses the frozen identity `Pop` / `jiahaoh.pop` / `0.1.0`, the
+`jiahaoh/pop` homepage and independent Appcast, and `pop` package names. This
+metadata and its archive tests do not prove that Bob copied, rendered, or ran
+the package. W-24 and W-25 own installed-host and real-provider evidence; no
+intermediate package should be presented as a completed release.
 
 ## Provider contracts
 
@@ -149,7 +151,7 @@ The benchmark excludes network latency. Compare results only when the machine, B
 
 ## Release safety
 
-Local packages append a lowercase development build suffix to the repository version only inside the generated archive. The intended Bob ordering is that lower, equal, and extra-component versions are ignored during installation while `<current-version>dev<build>` is newer than the matching stable version and older than the next patch release. Archive inspection proves the metadata transformation; the installed copy must prove Bob's actual ordering and asynchronous update behavior.
+Local packages append a lowercase development build suffix to the repository version only inside `dist/pop-dev.bobplugin`. Stable packaging produces the versioned GitHub asset `pop-<version>.bobplugin` and the byte-identical local alias `pop.bobplugin`. The intended Bob ordering is that lower, equal, and extra-component versions are ignored during installation while `<current-version>dev<build>` is newer than the matching stable version and older than the next patch release. Archive inspection proves the metadata transformation; the installed copy must prove Bob's actual ordering and asynchronous update behavior.
 
 Version metadata and its annotated tag are pushed atomically. A new GitHub release stays unpublished until its plugin asset uploads successfully. Reruns build from the tagged source: an unfinished draft asset may be replaced, while a published release is never modified and its existing asset supplies the Appcast hash.
 
@@ -237,4 +239,4 @@ The linked [Bob 1.8 plugin changes](https://bobtranslate.com/blog/2023-05-18-180
 
 ## Manual Bob verification
 
-Static checks cannot prove behavior inside the installed Bob host. Before release, follow the [packaged-plugin smoke test](./bob_smoke_test.md) in Bob 1.8.0 and a current Bob version. It covers copied metadata, settings rendering, provider validation, streaming, non-streaming, cancellation, terminal errors, and log redaction.
+Static checks cannot prove behavior inside the installed Bob host. Before release, follow the [packaged-plugin smoke test](./bob_smoke_test.md) in Bob 1.8.0 and a current Bob version. It covers copied metadata, settings rendering, provider validation, all six actions, streaming, non-streaming, cancellation, terminal errors, and log redaction.

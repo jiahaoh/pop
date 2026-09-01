@@ -1,10 +1,10 @@
 # Contributing
 
-This guide is for people changing the plugin. For installation or configuration help, start with the [configuration manual](../docs/configuration_manual_EN.md). Use [Issues](https://github.com/nextai-translator/bob-plugin-openai-translator/issues) for reproducible bugs and [Discussions](https://github.com/nextai-translator/bob-plugin-openai-translator/discussions) for usage questions or proposed features.
+This guide is for people changing Pop. For installation or configuration help, start with the [configuration manual](../docs/configuration_manual_EN.md). Product planning is maintained in Linear; keep code changes tied to the current plan rather than creating a second milestone system in GitHub.
 
 ## Before you start
 
-- Search existing issues and discussions.
+- Search the documentation, existing pull requests, and current Linear plan.
 - Include a reproduction when fixing a bug.
 - Discuss new user-facing behavior before implementing it.
 - Keep a pull request focused on one change.
@@ -62,7 +62,7 @@ For runtime changes, create a fresh local package:
 bun run package
 ```
 
-This command builds the plugin, checks Bob runtime compatibility, and creates `dist/openai-translator-dev.bobplugin`. Its generated version extends the repository version only inside the archive, so repeated local builds can be installed without consuming the next stable version. Install it in Bob and follow the [packaged-plugin smoke-test checklist](../docs/bob_smoke_test.md) for the affected settings and behavior. Changes to request handling require one streaming and one non-streaming translation.
+This command builds the plugin, checks Bob runtime compatibility, and creates `dist/pop-dev.bobplugin`. Its generated version extends the repository version only inside the archive, so repeated local builds can be installed without consuming the next stable version. Install it in Bob and follow the [packaged-plugin smoke-test checklist](../docs/bob_smoke_test.md) for the affected settings and behavior. Changes to request handling require one streaming and one non-streaming request for the affected action; release validation covers all six actions.
 
 Run `bun run benchmark` when a change can affect a local hot path or bundle size. Live-provider cases are part of `bun run test` but stay skipped unless `RUN_LIVE_TESTS=1` and the corresponding API Key are explicitly supplied. Tests must never read local credential files.
 

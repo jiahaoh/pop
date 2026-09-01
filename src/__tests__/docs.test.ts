@@ -16,6 +16,28 @@ describe('documentation consistency', () => {
       for (const model of MODEL_CATALOG) {
         expect(manual).toContain(`\`${model.id}\``);
       }
+      for (const action of [
+        'Ask',
+        'Custom',
+        'Grammar',
+        'Polish',
+        'Translate',
+        'Wording',
+      ]) {
+        expect(manual).toContain(action);
+      }
+      for (const legacySetting of [
+        'apiKeys',
+        'apiUrl',
+        'customModel',
+        'customSystemPrompt',
+        'customUserPrompt',
+        'model',
+        'reasoningMode',
+        'stream',
+      ]) {
+        expect(manual).toContain(`\`${legacySetting}\``);
+      }
       expect(manual).toContain('/responses');
       expect(manual).toContain('/chat/completions');
       expect(manual).toContain('temperature');
@@ -32,6 +54,16 @@ describe('documentation consistency', () => {
     ]);
 
     for (const readme of [chinese, english]) {
+      for (const action of [
+        'Ask',
+        'Custom',
+        'Grammar',
+        'Polish',
+        'Translate',
+        'Wording',
+      ]) {
+        expect(readme).toContain(action);
+      }
       expect(readme).toContain(info.minBobVersion);
       expect(readme).toMatch(/API [Kk]ey/);
       expect(readme).toContain('API URL');
@@ -41,5 +73,15 @@ describe('documentation consistency', () => {
     }
     expect(chinese.indexOf('API Key')).toBeLessThan(chinese.indexOf('API URL'));
     expect(english.indexOf('API key')).toBeLessThan(english.indexOf('API URL'));
+    expect(chinese).toContain('configuration_manual_CN.md#命令与默认路由');
+    expect(chinese).toContain(
+      'configuration_manual_CN.md#从-openai-translator-迁移',
+    );
+    expect(english).toContain(
+      'configuration_manual_EN.md#commands-and-default-routing',
+    );
+    expect(english).toContain(
+      'configuration_manual_EN.md#migrate-from-openai-translator',
+    );
   });
 });

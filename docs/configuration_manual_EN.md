@@ -1,20 +1,45 @@
-# Configuration Manual
+# Pop Configuration Manual
 
 Enter an API key to use the default OpenAI configuration: the default model, official API, streaming output, and task-aware automatic reasoning.
 
 ## Quick start
 
-1. Find OpenAI Translator in Bob's service settings.
-2. Enter an OpenAI API key.
-3. Save the configuration and translate.
+1. Find Pop in Bob's service settings
+2. Enter an OpenAI API key
+3. Keep the other defaults and save the configuration
+4. Run Pop on selected or entered text
 
-For the official Gemini or MiniMax API, select the corresponding model. For a third-party API service, enter the model and full API URL specified by the service.
+For the official Gemini or MiniMax API, select the corresponding model. For a third-party service, enter the model ID and full API URL that the service actually accepts.
+
+## Commands and default routing
+
+Put a command at the start of the first non-empty line. The body can follow on the same line or start on the next line.
+
+| Action | Long command | Short alias | Output |
+| --- | --- | --- | --- |
+| Ask | `/ask` | `/q` | Directly answer the question; useful Markdown is allowed |
+| Custom | `/custom` | `/c` | Follow the saved Custom instruction and user template |
+| Grammar | `/grammar` | `/g` | Corrected text, a divider, and 1–3 short notes |
+| Polish | `/polish` | `/p` | Keep the language and return only the polished text |
+| Translate | `/translate` | `/t` | Translate into Bob's target language and return only the translation |
+| Wording | `/word` | `/w` | 3–5 candidates with tone labels and brief differences |
+
+Without a command, Bob's language context selects the action:
+
+```text
+source language != target language  -> Translate
+source language == target language  -> Polish
+```
+
+Command matching is ASCII case-insensitive and requires a complete token. An unknown `/name`, an empty command body, or invalid Custom configuration returns an error before any network request. Start with `//` to escape the first slash as ordinary text: `//ask` follows default routing with the literal body `/ask`.
+
+Translate, Polish, and Grammar treat the body as data and do not execute instructions inside it. Ask treats the body as the user's real question.
 
 ## API key
 
 Separate multiple keys with commas to select one randomly for each request.
 
-A key is sent only to the resolved API URL. The plugin does not log keys or request headers.
+A key is sent only to the resolved API URL. Pop does not log keys or request headers.
 
 ## Model
 
@@ -35,13 +60,11 @@ With an empty API URL, the model selects the official API:
 | `gpt-*` or any other model | OpenAI Responses API |
 | `MiniMax-*` | MiniMax Chat Completions API |
 
-After selecting Custom model, enter the model ID accepted by the API. An OpenAI-compatible API may use a namespaced ID such as `openai/...`; follow the service documentation. Azure OpenAI uses a deployment name.
+After selecting Custom model, enter the raw model ID accepted by the API. An OpenAI-compatible API may use a namespaced ID such as `openai/...`; Azure OpenAI uses a deployment name. Follow the service documentation.
 
-## API URL
+## OpenAI-compatible API and API URL
 
-The API URL may be empty. An empty value uses the official endpoint selected by the model.
-
-For a third-party API service, enter the full request URL. The plugin currently supports OpenAI-compatible APIs and Azure OpenAI, and the URL must end in `/responses` or `/chat/completions`. The suffix selects the request format.
+The API URL may be empty; an empty value uses the official endpoint selected by the model. A third-party service needs the full request URL ending in `/responses` or `/chat/completions`. This suffix selects the wire format.
 
 Common examples:
 
@@ -52,13 +75,9 @@ Common examples:
 - OpenRouter: `https://openrouter.ai/api/v1/chat/completions`
 - Vercel AI Gateway: `https://ai-gateway.vercel.sh/v1/chat/completions`
 
-With an API URL, ordinary hosts use a Bearer token. A `*.openai.azure.com` host or an Azure path containing `/openai/v1` or `/openai/deployments/` automatically uses the `api-key` header.
+Ordinary hosts use a Bearer token. A `*.openai.azure.com` host, or an Azure path containing `/openai/v1` or `/openai/deployments/`, automatically uses the `api-key` header.
 
-## Streaming
-
-Streaming is enabled by default, so text appears as the model generates it. Disable it to wait for the complete result.
-
-Both modes respond to Bob's cancellation action. Invalid stream data, API errors, and empty responses are returned as failures rather than blank successful results.
+Do not use a `/models` response as proof of compatibility. Verify the actual model ID, URL, and protocol with a small generation request.
 
 ## Reasoning
 
@@ -72,13 +91,21 @@ The default is Auto. Translate, Polish, and Grammar use the latency-oriented Fas
 | Standard | Use the balanced level verified for the model |
 | Deep | Use the high level verified for the model |
 
-The plugin sends a reasoning field only for an exact model ID with verified support. Unknown and namespaced custom model IDs receive no reasoning field. Support varies between third-party APIs; use Model default if the service rejects the field.
+Pop sends a reasoning field only for an exact model ID with verified support. Unknown and namespaced custom model IDs receive no reasoning field. Support varies between third-party APIs; use Model default if the service rejects the field.
 
-## Additional requirements and Custom
+## Streaming
+
+Streaming is enabled by default, so the result appears as the model generates it. Disable it to wait for the complete result.
+
+Both modes respond to Bob's cancellation action. Invalid stream data, API errors, and empty responses are returned as failures rather than blank successful results.
+
+## Additional requirements
 
 Additional requirements add terminology, tone, or formatting preferences shared by every built-in action. They do not replace the selected action or its safety boundary.
 
-Custom uses three fields:
+## Custom
+
+The MVP supports one configured action:
 
 - Custom command adds one optional ASCII alias such as `/s`; `/custom` and `/c` remain available
 - Custom instruction defines the task and output boundary, may use `$sourceLang` and `$targetLang`, and cannot contain `$text`
@@ -90,20 +117,38 @@ For example, set the command to `/s`, the instruction to `Summarize the text for
 $text
 ```
 
-Entering `/s Long text` now runs that custom task. The task instruction and runtime text remain separate.
+Entering `/s Long text` now runs that task. The Custom instruction and runtime text remain separate.
+
+## Migrate from OpenAI Translator
+
+Pop's identifier is `jiahaoh.pop`, so it can coexist with OpenAI Translator. Bob does not carry settings from another identifier into Pop, and Pop does not read the other plugin's data. Apply the relevant values once:
+
+| Old setting | Handling in Pop |
+| --- | --- |
+| `apiKeys` | Same meaning; re-enter the value because it is a secure field |
+| `apiUrl` | Same meaning and key; copy the full request URL when needed |
+| `customModel` | Same meaning and key; copy the model ID after selecting Custom model |
+| `customSystemPrompt` | No longer read; move an independent task into `customActionInstruction`, or shared preferences into `additionalRequirements` |
+| `customUserPrompt` | No longer read; move a task template containing `$text` into `customActionUserTemplate`, or shared preferences into `additionalRequirements` |
+| `model` | Same meaning and key; select it again in Pop |
+| `reasoningMode` | `default` maps to Model default and `disable` maps to Fast; Auto, Standard, and Deep are also available |
+| `stream` | Same meaning and key; select it again in Pop; the default remains enabled |
+
+Save and validate the Pop configuration first. Whether to keep the old plugin is the user's decision; Pop does not delete or overwrite it.
 
 ## Temperature
 
-The plugin has no Temperature setting and does not send `temperature`. Model support for this parameter now differs, so omission uses a valid model-maintained default and avoids sending an invalid field to models with fixed sampling.
+Pop has no Temperature setting and does not send `temperature`. Model support for this parameter now differs, so omission uses a valid model-maintained default and avoids sending an invalid field to models with fixed sampling.
 
 ## Troubleshooting
 
-- Validation fails with only an API key: confirm that it is a valid OpenAI key with access to the default model.
-- Gemini or the global MiniMax API: select the corresponding model and leave the API URL empty; for MiniMax China, use the China API URL above.
-- OpenAI-compatible API: use the model ID from its documentation and enter the full API URL.
-- `Invalid API URL`: ensure the address ends in `/responses` or `/chat/completions`.
-- Azure OpenAI: enter the deployment name as the custom model and use the full `*.openai.azure.com` request URL.
-- The translation API rejects reasoning fields: set Reasoning to Model default.
+- Validation fails with only an API key: confirm that it is a valid OpenAI key with access to the default model
+- Gemini or the global MiniMax API: select the corresponding model and leave the API URL empty; for MiniMax China, use the China API URL above
+- OpenAI-compatible API: use the model ID from its documentation and enter the full API URL
+- `Invalid API URL`: ensure the address ends in `/responses` or `/chat/completions`
+- Azure OpenAI: enter the deployment name as the custom model and use the full `*.openai.azure.com` request URL
+- The API rejects reasoning fields: set Reasoning to Model default
+- `/custom` reports a missing configuration: enter a Custom instruction and ensure the user template contains `$text`
 
 Official references:
 

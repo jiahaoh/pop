@@ -29,7 +29,8 @@ the test record.
 
 ### P1 — Inspect the archive
 
-- Prerequisite: `bun run package` completed and the development archive exists.
+- Prerequisite: `bun run package` completed and
+  `dist/pop-dev.bobplugin` exists.
 - Action: run `unzip -t` and list the archive entries; extract `info.json` to a
   temporary directory for inspection.
 - Expected: the archive is valid and contains exactly `main.js`, `info.json`,
@@ -44,7 +45,7 @@ the test record.
 - Action: open the archive, wait for Bob's asynchronous installation to finish,
   then inspect the metadata from Bob's copied plugin rather than the original
   archive.
-- Expected: Bob installs or updates the intended plugin, and the copied name,
+- Expected: Bob installs or updates `Pop` / `jiahaoh.pop`, and the copied name,
   identifier, version, and minimum Bob version match the archive. A lower or
   equal installed version is not mistaken for a successful update.
 
@@ -109,29 +110,52 @@ release when both environments are available.
 - Expected: configuration fails before network transport with a clear parameter
   error explaining the required complete URL shape.
 
-## Translation requests
+## Action requests
 
-Use harmless input with a visibly deterministic result, for example `Hello,
-world!` from English to Simplified Chinese. Record elapsed behavior, not the API
-key or full wire payload.
+Use harmless inputs with visibly different expected shapes. Record the action,
+input shape, Bob languages, observed output, and pass/fail result, but not the
+API key or full wire payload.
 
-### T1 — Non-streaming request
+### T1 — Six actions and routing
+
+- Prerequisite: valid configuration; set the Custom alias to `/s`, instruction
+  to `Summarize the text. Return only the summary.`, and user template to
+  `$text`.
+- Action: run each row once. For commandless rows, remove the command and set
+  Bob's languages as shown.
+
+| Case | Input | Bob languages | Expected evidence |
+| --- | --- | --- | --- |
+| Ask | `/q What is 2 + 2?` | Any | Direct answer containing `4`, not a translation of the question |
+| Custom | `/s Bob plugins run in JavaScriptCore. They use Bob globals.` | Any | One summary following the saved task, not a built-in action |
+| Grammar | `/g She go to work yesterday.` | English → English | Corrected text plus a divider and brief explanation |
+| Polish | `/p This sentence is a little awkwardly written.` | English → English | Only smoother English text |
+| Translate | `/t Hello, world!` | English → Simplified Chinese | Only the Chinese translation |
+| Wording | `/w A polite way to decline a meeting` | English → English | 3–5 candidates with tone labels and differences |
+| Default Translate | `Hello, world!` | English → Simplified Chinese | Same task shape as explicit Translate |
+| Default Polish | `This sentence is a little awkwardly written.` | English → English | Same task shape as explicit Polish |
+
+- Expected: every case reaches its intended task; the Custom alias works;
+  built-in short aliases are recognized; no transform action executes an
+  instruction embedded in its data.
+
+### T2 — Non-streaming request
 
 - Prerequisite: valid configuration with streaming disabled.
-- Action: translate the sample once.
+- Action: run one deterministic sample once.
 - Expected: no partial updates are emitted; one terminal result appears; model
   formatting and blank lines are preserved inside one Bob paragraph; there is
   no JavaScriptCore runtime error.
 
-### T2 — Streaming request
+### T3 — Streaming request
 
 - Prerequisite: the same provider/model with streaming enabled.
-- Action: translate the sample once and watch partial output.
+- Action: run the same sample once and watch partial output.
 - Expected: output grows cumulatively without duplicated MiniMax prefixes or
   exposed reasoning; exactly one terminal result follows; a Responses stream
   without `response.completed` is not accepted as success.
 
-### T3 — Cancel a request
+### T4 — Cancel a request
 
 - Prerequisite: streaming enabled and an input/provider combination that runs
   long enough to cancel intentionally.
@@ -185,18 +209,18 @@ key or full wire payload.
 
 | ID | Risk or open assumption | Impact | Required follow-up |
 | --- | --- | --- | --- |
-| R1 | Static checks do not execute the bundle in Bob's JavaScriptCore | Unsupported syntax or host behavior can escape CI | Run P2 and T1–T2 in Bob before runtime releases |
-| R2 | Streaming correctness depends on Bob delivering stream chunks and one terminal handler with observed ordering | A host difference can duplicate, truncate, or hang output | Observe T2 and T3; keep the callback-style transport contract |
+| R1 | Static checks do not execute the bundle in Bob's JavaScriptCore | Unsupported syntax or host behavior can escape CI | Run P2 and T1–T3 in Bob before runtime releases |
+| R2 | Streaming correctness depends on Bob delivering stream chunks and one terminal handler with observed ordering | A host difference can duplicate, truncate, or hang output | Observe T3 and T4; keep the callback-style transport contract |
 | R3 | Non-streaming completion assumes Bob's `query.onCompletion` does not throw | A throwing callback could cause a second completion attempt | Verify normal Bob behavior; add a shared terminal guard if future evidence requires it |
-| R4 | Passing `cancelSignal` is statically tested, but Bob's cancellation terminal behavior is not | Late output or a hanging request can remain | Record T3 behavior in supported Bob versions |
+| R4 | Passing `cancelSignal` is statically tested, but Bob's cancellation terminal behavior is not | Late output or a hanging request can remain | Record T4 behavior in supported Bob versions |
 | R5 | Development version precedence and asynchronous copy behavior are Bob-specific | Bob may silently keep an older installed copy | Compare archive and copied metadata in P2 |
 | R6 | Exact OpenAI model mappings are reused for an OpenAI-compatible endpoint only when the same model ID is configured; unknown and namespaced IDs omit controls | A partial gateway may still reject a reasoning parameter | Test representative gateways before claiming support |
 | R7 | Bob's option form is static and saved-setting migration is a release contract | New Pop settings can become crowded or break saved values | Freeze identity and migration decisions in M1 before changing metadata/settings |
 | R8 | Multiple comma-separated API keys are selected randomly, including during validation | One bad key can make validation intermittent | Keep keys individually valid or add deterministic diagnostics in a future scoped change |
 | R9 | Provider model and reasoning contracts can drift after repository documentation is verified | Valid request bodies can become stale | M3 sources were refreshed on 2026-08-31; recheck again during M4 release validation |
-| R10 | Direct live tests use Bun/browser-style APIs, not Bob `$http` | A provider probe can pass while the plugin fails in Bob | Treat live tests as supplemental; complete T1–T2 in Bob |
+| R10 | Direct live tests use Bun/browser-style APIs, not Bob `$http` | A provider probe can pass while the plugin fails in Bob | Treat live tests as supplemental; complete T1–T3 in Bob |
 
-## Confirmed input to M1
+## Historical M0 handoff to M1
 
 - Pop will be an independent product with its own name, identifier, and Appcast.
 - The exact release identity and metadata changes belong to M1, not M0.

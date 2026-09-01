@@ -1,12 +1,17 @@
 # Maintainer orientation
 
-Implementation verified: 2026-08-31 at `a4c0b75`.
+Implementation verified: 2026-09-01 at `17d57b5` on
+`codex/milestone-04-bob-validation-release`.
 
 This guide is the shortest path from an unfamiliar checkout to a working model
 of the plugin. Read [architecture.md](./architecture.md) for design rationale and
 source coverage, read the [Pop product contract](./product_contract.md) before
 implementing action behavior, and use [bob_smoke_test.md](./bob_smoke_test.md)
 when validating an installed package.
+
+The independent release identity is `Pop` / `jiahaoh.pop` / `0.1.0` in
+`jiahaoh/pop`. The upstream translator remains reference history rather than
+the product or release destination.
 
 ## Working model
 
@@ -216,17 +221,41 @@ Use the Bun version declared by `package.json`.
 | `bun run test` | Unit, contract, metadata, docs, and packaging tests; live tests remain skipped by default | Real provider and Bob-host behavior |
 | `bun run build` | Create `dist/main.js` and copy public assets | That Bob can execute the bundle |
 | `bun run check:runtime` | Reject forbidden APIs and verify bundle exports/metadata | Full JavaScriptCore or Bob API compatibility |
-| `bun run package` | Rebuild, run the runtime check, and create `dist/openai-translator-dev.bobplugin` | Installation, version precedence, settings rendering, or requests in Bob |
+| `bun run package` | Rebuild, run the runtime check, and create `dist/pop-dev.bobplugin` | Installation, version precedence, settings rendering, or requests in Bob |
 | `bun run benchmark` | Measure local construction/parsing hot paths and bundle size | Network latency or end-to-end translation speed |
 | `git diff --check` | Detect whitespace errors | Type or runtime correctness |
 
 `bun run package` creates a flat zip containing `main.js`, `info.json`, and
 `icon.png`. It changes the version only in a temporary staging copy, using
 `<repository-version>dev<timestamp>` inside the archive, and leaves
-`package.json` and `public/info.json` unchanged. The command then reveals the
-archive in Finder; installation is a separate, manual Bob operation.
+`package.json` and `public/info.json` unchanged. It does not open or install the
+archive; Bob installation is an explicit smoke-test operation.
 
-## Verified local baseline
+## M4 release-preparation baseline
+
+W-22 was verified on 2026-09-01 with Bun 1.2.19 and commit `17d57b5`:
+
+| Command or artifact | Result |
+| --- | --- |
+| `bun run lint` | Passed; Biome and TypeScript reported no errors |
+| `bun run test` | 100 passed, 2 credential-gated MiniMax live tests skipped, 0 failed, 435 assertions |
+| `bun run build` | Passed |
+| `bun run check:runtime` | Passed; 32,249-byte bundle, expected exports, no forbidden runtime APIs |
+| `bun run package` | Passed; `dist/pop-dev.bobplugin` created |
+| `bun run release 0.1.0` | Passed; `pop-0.1.0.bobplugin` and byte-identical `pop.bobplugin` created |
+
+The development archive SHA-256 was
+`27db703c00f0efc95252afe4697c960e59c3f176594bca26295f05ab8b172a35`.
+Its root contained exactly `main.js`, `info.json`, and `icon.png`; its metadata
+was `Pop` / `jiahaoh.pop` / `0.1.0dev1788223744197`, while repository metadata
+remained `0.1.0`. The stable versioned package and alias shared SHA-256
+`c08596a7d87097b438a2661e819e060d6823c4725488563707f6c6102bde8fe9`.
+
+These are build and archive facts. Bob installation, copied metadata, settings
+rendering, saved values, JavaScriptCore execution, and real-provider behavior
+remain W-24 and W-25.
+
+## Historical M0 baseline
 
 The M0 baseline was run on 2026-08-22 from source commit `195d1d6` on arm64
 macOS 26.5.2. `package.json` declares Bun 1.2.19. The shell initially had no
