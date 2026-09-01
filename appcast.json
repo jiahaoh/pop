@@ -1,4 +1,13 @@
 {
   "identifier": "jiahaoh.pop",
-  "versions": []
+  "versions": [
+    {
+      "version": "0.1.0",
+      "desc": "# Pop v0.1.0\n\nPop 的首个稳定版本，将 selection-first 的单次 AI action 带入 Bob。\n\n## 主要能力\n\n- Translate、Polish、Grammar、Ask、Wording 和 Custom 六种 actions\n- 首行长命令、短别名和可配置的 Custom alias\n- 无命令时，跨语言默认 Translate，同语言默认 Polish\n- OpenAI、Google Gemini、MiniMax 与 OpenAI 兼容 API\n- 按 action 自动选择的推理档位，以及安全的自定义 model ID fallback\n- 流式与非流式输出、取消请求和明确的错误反馈\n\n## 安装与迁移\n\n下载并打开 `pop-0.1.0.bobplugin`。Pop 使用独立 identifier `jiahaoh.pop`，可以与 OpenAI Translator 并存；旧插件设置不会自动迁移，请按配置手册手工填写需要保留的值。\n\n## 隐私边界\n\nPop 自身不记录 API Key、认证请求头或输入正文。Bob 1.20.0 的本地主程序日志可能记录输入原文；处理敏感内容前请阅读仓库配置手册中的隐私与本地日志说明。\n\n完整安装、命令和配置说明：https://github.com/jiahaoh/pop#readme",
+      "sha256": "4a1e4ea632cd389ccd4d5914d75cf148cb6071b5077f294ebd50b2de042d87ef",
+      "url": "https://github.com/jiahaoh/pop/releases/download/v0.1.0/pop-0.1.0.bobplugin",
+      "minBobVersion": "1.8.0",
+      "timestamp": 1788232870198
+    }
+  ]
 }
