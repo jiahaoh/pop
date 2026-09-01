@@ -131,6 +131,7 @@ API key or full wire payload.
 | Grammar | `/g She go to work yesterday.` | English → English | Corrected text plus a divider and brief explanation |
 | Polish | `/p This sentence is a little awkwardly written.` | English → English | Only smoother English text |
 | Translate | `/t Hello, world!` | English → Simplified Chinese | Only the Chinese translation |
+| Translate from Chinese | `/t 你好，世界！` | Simplified Chinese → Simplified Chinese | Only the English translation |
 | Wording | `/w A polite way to decline a meeting` | English → English | 3–5 candidates with tone labels and differences |
 | Default Translate | `Hello, world!` | English → Simplified Chinese | Same task shape as explicit Translate |
 | Default Polish | `This sentence is a little awkwardly written.` | English → English | Same task shape as explicit Polish |

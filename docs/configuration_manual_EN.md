@@ -21,7 +21,7 @@ Put a command at the start of the first non-empty line. The body can follow on t
 | Custom | `/custom` | `/c` | Follow the saved Custom instruction and user template |
 | Grammar | `/grammar` | `/g` | Corrected text, a divider, and 1–3 short notes |
 | Polish | `/polish` | `/p` | Keep the language and return only the polished text |
-| Translate | `/translate` | `/t` | Translate into Bob's target language and return only the translation |
+| Translate | `/translate` | `/t` | Translate Chinese into English and other languages into Simplified Chinese; return only the translation |
 | Wording | `/word` | `/w` | 3–5 candidates with tone labels and brief differences |
 
 Without a command, Bob's language context selects the action:
@@ -30,6 +30,8 @@ Without a command, Bob's language context selects the action:
 source language != target language  -> Translate
 source language == target language  -> Polish
 ```
+
+Once Translate is selected, Pop derives the default direction from the detected input language: Simplified Chinese, Traditional Chinese, Cantonese, and Classical Chinese go to English; every other language goes to Simplified Chinese.
 
 Command matching is ASCII case-insensitive and requires a complete token. An unknown `/name`, an empty command body, or invalid Custom configuration returns an error before any network request. Start with `//` to escape the first slash as ordinary text: `//ask` follows default routing with the literal body `/ask`.
 

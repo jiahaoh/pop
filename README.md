@@ -25,7 +25,7 @@ Pop 是面向选中文本和单次输入的 one-shot AI action 工具。它在 [
 | Custom | `/custom`、`/c` 或用户别名 | 执行已保存的自定义文本任务 |
 | Grammar | `/grammar`、`/g` | 返回修正版和简短说明 |
 | Polish | `/polish`、`/p` | 保持原语言并只返回润色结果 |
-| Translate | `/translate`、`/t` | 翻译为 Bob 目标语言 |
+| Translate | `/translate`、`/t` | 中文输入译为英文，其他语言译为简体中文 |
 | Wording | `/word`、`/w` | 返回 3–5 个带语气说明的候选 |
 
 没有命令时，源语言与目标语言不同会 Translate，相同会 Polish。命令解析、转义和错误行为见[命令与默认路由](./docs/configuration_manual_CN.md#命令与默认路由)。

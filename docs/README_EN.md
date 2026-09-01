@@ -25,7 +25,7 @@ See [Quick start](./configuration_manual_EN.md#quick-start) for the complete set
 | Custom | `/custom`, `/c`, or the user alias | Run the saved custom text task |
 | Grammar | `/grammar`, `/g` | Return the corrected text and a short explanation |
 | Polish | `/polish`, `/p` | Keep the language and return only the polished text |
-| Translate | `/translate`, `/t` | Translate into Bob's target language |
+| Translate | `/translate`, `/t` | Translate Chinese into English and other languages into Simplified Chinese |
 | Wording | `/word`, `/w` | Return 3–5 candidates with tone notes |
 
 Without a command, different source and target languages select Translate; matching languages select Polish. See [Commands and default routing](./configuration_manual_EN.md#commands-and-default-routing) for parsing, escaping, and error behavior.

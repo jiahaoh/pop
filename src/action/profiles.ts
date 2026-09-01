@@ -38,7 +38,7 @@ export const TASK_PROFILES = Object.freeze({
   }),
   translate: profile({
     id: 'translate',
-    languagePolicy: 'bob-target',
+    languagePolicy: 'chinese-english-default',
     outputPolicy: 'result-only',
     recommendedReasoning: 'fast',
     safetyPolicy: 'runtime-text-is-data',

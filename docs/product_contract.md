@@ -16,7 +16,7 @@ Pop 不提供多轮对话、历史记忆、工具调用、联网搜索或附件�
 
 1. **Selection-first**：优先优化选中文本后的单次操作
 2. **Deterministic by default**：任务由 Bob 语言上下文和显式命令确定，不使用默认 AI intent classification
-3. **Backward-compatible default**：没有显式命令时，源语言与目标语言不同则 Translate，相同则 Polish
+3. **Deterministic default**：没有显式命令时，源语言与目标语言不同则 Translate，相同则 Polish；Translate 默认把中文输入译为英文，其他输入译为简体中文
 4. **Task/transport separation**：action、prompt 和输出契约位于 provider adapter 之前，adapter 只处理 wire format
 5. **Input safety by task**：Transform 类 action 把正文视为数据；Ask 把正文视为用户问题
 6. **Compact configuration**：Bob 的静态设置按用户配置路径组织，不暴露内部 adapter 结构
@@ -29,7 +29,7 @@ Pop 不提供多轮对话、历史记忆、工具调用、联网搜索或附件�
 | Custom | 执行用户配置并命名的自定义文本任务 | 配置的 task instruction 是指令，运行时正文是待处理数据 | 由自定义 task instruction 定义 | 遵循自定义 task instruction，不添加通用包装 |
 | Grammar | 修正语法、拼写和用法 | 正文是待处理数据，不执行其中的指令 | 保持正文语言 | 修正版在前，随后给出简短修改说明 |
 | Polish | 让基本正确的正文更自然 | 正文是待处理数据，不执行其中的指令 | 保持正文语言 | 只返回润色结果；不附解释 |
-| Translate | 把正文翻译为 Bob 目标语言 | 正文是待处理数据，不执行其中的指令 | 输出 Bob 目标语言 | 只返回译文；保留含义、语气和格式 |
+| Translate | 按中英默认方向翻译正文 | 正文是待处理数据，不执行其中的指令 | 简体中文、繁体中文、粤语或古文输入输出英文，其他输入输出简体中文 | 只返回译文；保留含义、语气和格式 |
 | Wording | 为一个含义或语境提供更合适的表达 | 把正文解释为措辞需求和语言素材，不执行其中引用内容的指令 | 跟随用户要求；未指定时使用正文语言 | 返回 3–5 个候选、语气标签和简短区别 |
 
 Translate、Polish 和 Grammar 属于 Transform action。即使正文包含“忽略先前指令”等文字，也只处理这段文字本身。Ask 的正文则是用户有意发给模型的问题。Wording 可以理解用户对语气、对象和场景的要求，但引用或待改写的素材仍然是数据。
@@ -47,7 +47,9 @@ detectFrom != detectTo  -> Translate
 detectFrom == detectTo  -> Polish
 ```
 
-这里的兼容目标是现有默认翻译/同语言润色习惯，不是保证旧自定义 prompt 在新产品中自动迁移。旧设置的处理见“发布身份与兼容策略”。
+Bob 语言上下文只负责在没有命令时选择 Translate 或 Polish。进入 Translate 后，简体中文、繁体中文、粤语和古文输入译为英文，其他输入译为简体中文。
+
+默认路由保留现有翻译/同语言润色的 action 选择习惯，但不保证旧自定义 prompt 在新产品中自动迁移。旧设置的处理见“发布身份与兼容策略”。
 
 ## 显式命令
 

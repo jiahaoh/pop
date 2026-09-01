@@ -3,8 +3,20 @@ import { langMap } from '../lang';
 import type { ActionId, ParsedCommand, ResolvedTask } from '../types';
 import { getTaskProfile } from './profiles';
 
+const CHINESE_LANGUAGE_CODES = new Set(['zh-Hans', 'zh-Hant', 'yue', 'wyw']);
+
 const getDefaultAction = (query: TextTranslateQuery): ActionId =>
   query.detectFrom === query.detectTo ? 'polish' : 'translate';
+
+const getTargetLanguage = (
+  query: TextTranslateQuery,
+  action: ActionId,
+): string => {
+  if (action !== 'translate') {
+    return langMap.get(query.detectTo) || query.detectTo;
+  }
+  return CHINESE_LANGUAGE_CODES.has(query.detectFrom) ? 'en' : 'zh-CN';
+};
 
 export const resolveTask = (
   query: TextTranslateQuery,
@@ -16,7 +28,7 @@ export const resolveTask = (
     explicit: command.explicit,
     profile: getTaskProfile(action),
     sourceLanguage: langMap.get(query.detectFrom) || query.detectFrom,
-    targetLanguage: langMap.get(query.detectTo) || query.detectTo,
+    targetLanguage: getTargetLanguage(query, action),
     text: command.text,
   });
 };

@@ -29,7 +29,7 @@ export type ActionId =
   | 'wording';
 
 export type TaskLanguagePolicy =
-  | 'bob-target'
+  | 'chinese-english-default'
   | 'input-language'
   | 'task-defined'
   | 'user-request';
