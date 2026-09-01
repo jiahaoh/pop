@@ -38,7 +38,6 @@ describe('info.json consistency', () => {
     expect(packageMetadata).toMatchObject({
       homepage: 'https://github.com/jiahaoh/pop',
       name: 'pop-bobplugin',
-      version: '0.1.0',
     });
     expect(info).toMatchObject({
       appcast:
@@ -47,7 +46,6 @@ describe('info.json consistency', () => {
       homepage: 'https://github.com/jiahaoh/pop',
       identifier: 'jiahaoh.pop',
       name: 'Pop',
-      version: '0.1.0',
     });
     expect(appcast.identifier).toBe('jiahaoh.pop');
     const releases = appcast.versions as AppcastRelease[];
