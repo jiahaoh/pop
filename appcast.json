@@ -2,6 +2,14 @@
   "identifier": "jiahaoh.pop",
   "versions": [
     {
+      "version": "0.1.2",
+      "desc": "修复 /t 命令翻译方向判断：移除命令后按正文语言决定目标语言，中文译为英文，其他语言译为简体中文",
+      "sha256": "2fe9686e80fcb19056f87be732f93f3061bc429018aa7110e2846dc57593499a",
+      "url": "https://github.com/jiahaoh/pop/releases/download/v0.1.2/pop-0.1.2.bobplugin",
+      "minBobVersion": "1.8.0",
+      "timestamp": 1788304518675
+    },
+    {
       "version": "0.1.1",
       "desc": "Pop v0.1.1 优化默认 action 行为与推理策略：中文输入译为英文、其他语言译为简体中文，新增 GPT-5.6 Terra，并改进 Polish 与 Wording prompts；Bun 1.2.19 的 103 项测试、lint、build、runtime、package，以及 Bob 1.20.0 的安装、设置、provider validation、流式和非流式请求均通过。",
       "sha256": "e571f02ae4178bef80a4a6b2c4a103133ca6410f7f09384f41d53364e6d8828c",
